@@ -1,5 +1,6 @@
 ---
 import { dungeons } from '../../data/zelda-oot/dungeons';
+import ItemLink from './ItemLink.astro';
 
 const list = [...dungeons].sort((a, b) => a.order - b.order);
 ---
@@ -29,7 +30,14 @@ const list = [...dungeons].sort((a, b) => a.order - b.order);
 							<small lang="en">{d.nameEn}</small>
 						</th>
 						<td>{d.age}</td>
-						<td>{d.item}</td>
+						<td>
+							{d.item.split(' e ').map((part, i) => (
+								<>
+									{i > 0 && ' e '}
+									<ItemLink text={part} />
+								</>
+							))}
+						</td>
 						<td>{d.boss ?? '—'}</td>
 						<td>{d.reward ?? '—'}</td>
 					</tr>

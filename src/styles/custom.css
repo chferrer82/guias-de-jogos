@@ -29,3 +29,14 @@
 .table-wrap table.compact {
 	min-width: 0;
 }
+
+/* O banco de itens usa duas colunas: dá mais largura à página que o contém. */
+:root:has([data-item-db]) {
+	--sl-content-width: 64rem;
+}
+
+/* Nomes de itens que abrem a ficha no painel lateral. */
+a.item-link {
+	text-decoration-style: dotted;
+	text-underline-offset: 0.2em;
+}

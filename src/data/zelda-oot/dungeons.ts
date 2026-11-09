@@ -130,7 +130,7 @@ export const dungeons: Dungeon[] = [
 		nameEn: 'Spirit Temple',
 		age: 'adulto',
 		required: true,
-		item: 'Manoplas de Prata (pegas quando criança, usadas quando adulto) e Escudo Espelhado',
+		item: 'Manoplas de Prata e Escudo Espelhado',
 		boss: 'Twinrova',
 		reward: 'Medalhão do Espírito',
 		bossTip: 'Absorva três ataques do mesmo elemento com o Escudo Espelhado e devolva-os contra a irmã do elemento oposto.',

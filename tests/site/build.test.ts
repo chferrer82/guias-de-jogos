@@ -2,6 +2,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, posix, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { items } from '../../src/data/zelda-oot/items';
 
 const DIST = join(process.cwd(), 'dist');
 const BASE = '/guias-de-jogos/';
@@ -24,6 +25,7 @@ const EXPECTED = [
 	'zelda-ocarina-of-time/primeiros-passos/',
 	'zelda-ocarina-of-time/guia-por-local/',
 	'zelda-ocarina-of-time/bosque-perdido/',
+	'zelda-ocarina-of-time/itens/',
 	'zelda-ocarina-of-time/detonado-crianca/',
 	'zelda-ocarina-of-time/detonado-adulto/',
 	'zelda-ocarina-of-time/masmorras/',
@@ -85,6 +87,28 @@ describe('Site gerado', () => {
 		expect(lw.match(/<li id="rota-/g)).toHaveLength(7);
 		const guide = read(BASE + 'zelda-ocarina-of-time/guia-por-local/');
 		expect(guide.match(/<div class="age[ "]/g)).toHaveLength(19 * 2);
+	});
+
+	it('o banco de itens tem uma ficha por item', () => {
+		const html = read(BASE + 'zelda-ocarina-of-time/itens/');
+		expect(html.match(/<article[^>]* data-item-card/g)).toHaveLength(items.length);
+	});
+
+	it('os guias têm links de itens e todos apontam para uma ficha que existe', () => {
+		const html = read(BASE + 'zelda-ocarina-of-time/itens/');
+		const ids = new Set([...html.matchAll(/<article[^>]* id="(item-[^"]+)"/g)].map((m) => m[1]));
+		const target = BASE + 'zelda-ocarina-of-time/itens/#';
+		let total = 0;
+		for (const f of htmlPages) {
+			for (const [tag] of readFileSync(f, 'utf8').matchAll(/<a [^>]*class="item-link[ "][^>]*>/g)) {
+				total++;
+				const href = tag.match(/href="([^"]+)"/)?.[1] ?? '';
+				expect(href.startsWith(target), `${urlOf(f)} -> ${href}`).toBe(true);
+				expect(ids, `${urlOf(f)} -> ${href}`).toContain(href.slice(target.length));
+			}
+		}
+		expect(total).toBeGreaterThan(40);
+		expect(read(BASE + 'zelda-ocarina-of-time/detonado-crianca/')).toContain('data-item="espada-kokiri"');
 	});
 
 	it('continua leve: cada página HTML fica abaixo de 150 KB', () => {

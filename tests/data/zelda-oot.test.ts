@@ -12,6 +12,7 @@ import {
 import { goldSkulltulas } from '../../src/data/zelda-oot/skulltulas';
 import { lostWoodsRoutes } from '../../src/data/zelda-oot/lost-woods';
 import { places } from '../../src/data/zelda-oot/places';
+import { categoryLabels, findItem, items } from '../../src/data/zelda-oot/items';
 
 const unique = <T>(list: T[]) => new Set(list).size === list.length;
 
@@ -282,5 +283,53 @@ describe('Guia por local', () => {
 		expect(goldSkulltulas.filter((s) => all.includes(s.region))).toHaveLength(56);
 		const outside = heartPieces.filter((p) => !dungeonNames.has(p.region));
 		expect(heartPieces.filter((p) => all.includes(p.region))).toHaveLength(outside.length);
+	});
+});
+
+describe('Banco de itens', () => {
+	const names = items.flatMap((it) => [it.name, ...(it.aliases ?? [])]);
+
+	it('ids e nomes são únicos, para os links não apontarem para o item errado', () => {
+		expect(unique(items.map((it) => it.id))).toBe(true);
+		expect(unique(names)).toBe(true);
+	});
+
+	it('ids servem como âncora de URL', () => {
+		for (const it of items) expect(it.id).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+	});
+
+	it('todo item tem categoria conhecida, descrição e como conseguir', () => {
+		for (const it of items) {
+			expect(Object.keys(categoryLabels), it.id).toContain(it.category);
+			expect(it.description.length, it.id).toBeGreaterThan(10);
+			expect(it.obtain.length, it.id).toBeGreaterThan(10);
+		}
+	});
+
+	it('todas as categorias têm itens', () => {
+		for (const c of Object.keys(categoryLabels)) expect(items.some((it) => it.category === c), c).toBe(true);
+	});
+
+	it('o item principal de cada masmorra está no banco (o Castelo de Ganon não tem)', () => {
+		for (const d of dungeons.filter((d) => d.id !== 'ganons-castle')) {
+			for (const part of d.item.split(' e ')) expect(findItem(part), `${d.id}: ${part}`).toBeDefined();
+		}
+	});
+
+	it('cada passo da troca da Espada Biggoron está no banco, como item da troca do adulto', () => {
+		for (const t of biggoronTrade) expect(findItem(t.item)?.category, t.item).toBe('troca-adulto');
+	});
+
+	it('os itens pedidos pelas Skulltulas e pelo Bosque Perdido estão no banco (canções à parte)', () => {
+		// "Fogo" vale qualquer chama (Galho Deku aceso, Fogo de Din, Flechas de Fogo);
+		// a Canção do Espantalho (criada pelo jogador) e o Ataque giratório não são itens.
+		const notItems = new Set([...songs.map((s) => s.name), 'Fogo', 'Canção do Espantalho', 'Ataque giratório']);
+		const needs = new Set([...goldSkulltulas.flatMap((s) => s.needs), ...lostWoodsRoutes.flatMap((r) => r.needs)]);
+		for (const n of needs) if (!notItems.has(n)) expect(findItem(n), n).toBeDefined();
+	});
+
+	it('findItem ignora o nome em inglês entre parênteses', () => {
+		expect(findItem('Bumerangue (Boomerang)')?.id).toBe('bumerangue');
+		expect(findItem('Nada disso')).toBeUndefined();
 	});
 });

@@ -1,0 +1,315 @@
+---
+import { items, categoryLabels, ageLabels, type ItemCategory } from '../../data/zelda-oot/items';
+
+// Sem JavaScript, a lista vira um índice de links e todas as fichas aparecem abaixo.
+const normalize = (s: string) =>
+	s
+		.normalize('NFD')
+		.replace(/\p{Diacritic}/gu, '')
+		.toLowerCase();
+const categories = Object.keys(categoryLabels) as ItemCategory[];
+const searchText = (it: (typeof items)[number]) => normalize([it.name, it.nameEn, ...(it.aliases ?? [])].join(' '));
+// "ambas" aparece nos dois filtros de idade.
+const ageKeys = (age: string) => (age === 'ambas' ? 'criança adulto' : age);
+---
+
+<script is:inline>document.documentElement.classList.add('js');</script>
+
+<div class="item-db not-content" data-item-db>
+	<div class="db-controls">
+		<label class="db-search">
+			<span>Buscar item</span>
+			<input type="search" data-search placeholder="Ex.: hookshot, botas, máscara" autocomplete="off" />
+		</label>
+		<label>
+			<span>Categoria</span>
+			<select data-category>
+				<option value="">Todas</option>
+				{categories.map((c) => <option value={c}>{categoryLabels[c]}</option>)}
+			</select>
+		</label>
+		<label>
+			<span>Idade</span>
+			<select data-age>
+				<option value="">Qualquer</option>
+				<option value="criança">Criança</option>
+				<option value="adulto">Adulto</option>
+			</select>
+		</label>
+		<p class="db-count" role="status" data-count>{items.length} itens</p>
+	</div>
+
+	<div class="db-body">
+		<nav class="db-list" aria-label="Lista de itens">
+			<ul>
+				{
+					items.map((it) => (
+						<li data-haystack={searchText(it)} data-cat={it.category} data-age={ageKeys(it.age)}>
+							<a href={`#item-${it.id}`} data-id={it.id}>
+								<span class="db-name">{it.name}</span>
+								<span class="db-sub">
+									{categoryLabels[it.category]} · {ageLabels[it.age]}
+								</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+			<p class="db-empty" data-empty hidden>
+				Nenhum item encontrado.
+			</p>
+		</nav>
+
+		<div class="db-detail" data-detail>
+			{
+				items.map((it) => (
+					<article class="item-card" id={`item-${it.id}`} data-item-card>
+						<h2 tabindex="-1">{it.name}</h2>
+						<p class="item-meta">
+							<span lang="en">{it.nameEn}</span>
+							<span class="badge">{categoryLabels[it.category]}</span>
+							<span class="badge">{ageLabels[it.age]}</span>
+							<span class={`badge ${it.required ? 'badge-req' : ''}`}>{it.required ? 'Obrigatório' : 'Opcional'}</span>
+						</p>
+						<p>{it.description}</p>
+						<h3>Como conseguir</h3>
+						<p>{it.obtain}</p>
+						{it.tiers && (
+							<>
+								<h3>Capacidade e melhorias</h3>
+								<ul>
+									{it.tiers.map((t) => (
+										<li>{t}</li>
+									))}
+								</ul>
+							</>
+						)}
+					</article>
+				))
+			}
+		</div>
+	</div>
+</div>
+
+<script>
+	const normalize = (s: string) =>
+		s
+			.normalize('NFD')
+			.replace(/\p{Diacritic}/gu, '')
+			.toLowerCase();
+
+	for (const db of document.querySelectorAll<HTMLElement>('[data-item-db]')) {
+		const search = db.querySelector<HTMLInputElement>('[data-search]')!;
+		const category = db.querySelector<HTMLSelectElement>('[data-category]')!;
+		const age = db.querySelector<HTMLSelectElement>('[data-age]')!;
+		const count = db.querySelector<HTMLElement>('[data-count]')!;
+		const empty = db.querySelector<HTMLElement>('[data-empty]')!;
+		const rows = [...db.querySelectorAll<HTMLLIElement>('.db-list li')];
+		const cards = [...db.querySelectorAll<HTMLElement>('[data-item-card]')];
+		const detail = db.querySelector<HTMLElement>('[data-detail]')!;
+		const list = db.querySelector<HTMLElement>('.db-list')!;
+		const wide = window.matchMedia('(min-width: 50rem)');
+
+		const filter = () => {
+			const q = normalize(search.value.trim());
+			let shown = 0;
+			for (const r of rows) {
+				const ok =
+					(!q || r.dataset.haystack!.includes(q)) &&
+					(!category.value || r.dataset.cat === category.value) &&
+					(!age.value || r.dataset.age!.split(' ').includes(age.value));
+				r.hidden = !ok;
+				if (ok) shown++;
+			}
+			count.textContent = `${shown} ${shown === 1 ? 'item' : 'itens'}`;
+			empty.hidden = shown > 0;
+		};
+
+		const select = (id: string, focus: boolean) => {
+			const card = cards.find((c) => c.id === `item-${id}`);
+			if (!card) return;
+			// Um link para um item escondido pelos filtros limpa os filtros, para a lista mostrar o item.
+			const row = rows.find((r) => r.querySelector('a')!.dataset.id === id);
+			if (row?.hidden) {
+				search.value = '';
+				category.value = '';
+				age.value = '';
+				filter();
+			}
+			for (const c of cards) c.classList.toggle('is-selected', c === card);
+			for (const r of rows) {
+				const link = r.querySelector('a')!;
+				if (link.dataset.id === id) {
+					link.setAttribute('aria-current', 'true');
+					// Rola só a lista, sem mexer na página, para o item escolhido ficar visível.
+					list.scrollTop = link.offsetTop - list.clientHeight / 2;
+				} else link.removeAttribute('aria-current');
+			}
+			if (focus) {
+				card.querySelector<HTMLElement>('h2')!.focus({ preventScroll: wide.matches });
+				if (!wide.matches) detail.scrollIntoView({ block: 'start' });
+			}
+		};
+
+
+		list.addEventListener('click', (e) => {
+			const link = (e.target as Element).closest<HTMLAnchorElement>('a[data-id]');
+			if (!link) return;
+			e.preventDefault();
+			history.replaceState(null, '', `#item-${link.dataset.id}`);
+			select(link.dataset.id!, true);
+		});
+		search.addEventListener('input', filter);
+		category.addEventListener('change', filter);
+		age.addEventListener('change', filter);
+
+		const fromHash = () => location.hash.replace(/^#item-/, '');
+		window.addEventListener('hashchange', () => select(fromHash(), true));
+		const initial = fromHash();
+		select(cards.some((c) => c.id === `item-${initial}`) ? initial : cards[0].id.replace(/^item-/, ''), false);
+		filter();
+	}
+</script>
+
+<style>
+	.item-db {
+		margin-top: 1.5rem;
+	}
+	.db-controls {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem 1rem;
+		align-items: end;
+		margin-bottom: 1rem;
+	}
+	.db-controls label {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		font-size: var(--sl-text-sm);
+		font-weight: 600;
+	}
+	.db-search {
+		flex: 1 1 14rem;
+	}
+	.db-controls input,
+	.db-controls select {
+		font: inherit;
+		font-weight: 400;
+		padding: 0.4rem 0.6rem;
+		border: 1px solid var(--sl-color-gray-4);
+		border-radius: 0.4rem;
+		background: var(--sl-color-black);
+		color: var(--sl-color-white);
+	}
+	.db-count {
+		margin: 0;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-2);
+	}
+	.db-list ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.db-list a {
+		display: block;
+		padding: 0.4rem 0.6rem;
+		border-radius: 0.4rem;
+		text-decoration: none;
+		color: var(--sl-color-white);
+	}
+	.db-list a:hover {
+		background: var(--sl-color-gray-6);
+	}
+	.db-list a[aria-current='true'] {
+		background: var(--sl-color-accent-low);
+		box-shadow: inset 3px 0 0 var(--sl-color-accent);
+	}
+	.db-name {
+		display: block;
+		font-weight: 600;
+	}
+	.db-sub {
+		display: block;
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-2);
+	}
+	.db-empty {
+		color: var(--sl-color-gray-3);
+		font-style: italic;
+	}
+	.item-card {
+		padding: 1rem 1.25rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.75rem;
+	}
+	.item-card + .item-card {
+		margin-top: 1rem;
+	}
+	.item-card h2 {
+		margin: 0;
+		font-size: var(--sl-text-2xl);
+		color: var(--sl-color-white);
+	}
+	.item-card h2:focus {
+		outline: none;
+	}
+	.item-card h3 {
+		margin: 1rem 0 0.25rem;
+		font-size: var(--sl-text-base);
+		color: var(--sl-color-white);
+	}
+	.item-card p,
+	.item-card ul {
+		margin: 0.5rem 0 0;
+	}
+	.item-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		align-items: center;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-2);
+	}
+	.badge {
+		padding: 0.05rem 0.5rem;
+		border: 1px solid var(--sl-color-gray-4);
+		border-radius: 999px;
+		font-size: var(--sl-text-xs);
+	}
+	.badge-req {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-accent-high);
+	}
+
+	/* Com JavaScript: lista à esquerda e ficha à direita, como num compêndio. */
+	:global(.js) .db-list {
+		position: relative;
+		max-height: 18rem;
+		overflow-y: auto;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.75rem;
+		padding: 0.25rem;
+		margin-bottom: 1rem;
+	}
+	:global(.js) [data-item-card]:not(.is-selected) {
+		display: none;
+	}
+	@media (min-width: 50rem) {
+		:global(.js) .db-body {
+			display: grid;
+			grid-template-columns: minmax(14rem, 18rem) 1fr;
+			gap: 1rem;
+			align-items: start;
+		}
+		:global(.js) .db-list {
+			max-height: 70vh;
+			margin-bottom: 0;
+		}
+		:global(.js) .db-detail {
+			position: sticky;
+			top: calc(var(--sl-nav-height, 4rem) + 1rem);
+		}
+	}
+</style>

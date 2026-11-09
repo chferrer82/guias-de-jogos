@@ -1,12 +1,15 @@
 ---
 import { biggoronTrade } from '../../data/zelda-oot/collectibles';
+import ItemLink from './ItemLink.astro';
 ---
 
 <ol class="trade">
 	{
 		biggoronTrade.map((t) => (
 			<li>
-				<strong>{t.item}</strong>
+				<strong>
+					<ItemLink text={t.item} />
+				</strong>
 				{t.timed && <span class="timed"> · tem tempo limite</span>}
 				<br />
 				{t.giveTo}

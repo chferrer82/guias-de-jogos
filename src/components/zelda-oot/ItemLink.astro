@@ -1,0 +1,22 @@
+---
+// Mostra o texto como link para a ficha do item quando ele está no banco de itens.
+import { findItem } from '../../data/zelda-oot/items';
+
+interface Props {
+	text: string;
+}
+
+const { text } = Astro.props;
+const item = findItem(text);
+const href = item && `${import.meta.env.BASE_URL.replace(/\/$/, '')}/zelda-ocarina-of-time/itens/#item-${item.id}`;
+---
+
+{
+	item ? (
+		<a class="item-link" data-item={item.id} href={href}>
+			{text}
+		</a>
+	) : (
+		text
+	)
+}

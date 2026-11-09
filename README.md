@@ -6,7 +6,7 @@ Portal leve, gratuito e aberto de guias de jogos em português, feito pela e par
 
 ## Guias disponíveis
 
-- **The Legend of Zelda: Ocarina of Time**: detonado (criança e adulto), guia por local (o que está liberado e bloqueado em cada idade), rotas do Bosque Perdido, masmorras e chefes, as 12 canções da ocarina, as 36 Peças de Coração com checklist, as 100 Skulltulas Douradas com checklist e filtros e a missão da Espada Biggoron.
+- **The Legend of Zelda: Ocarina of Time**: detonado (criança e adulto), guia por local (o que está liberado e bloqueado em cada idade), rotas do Bosque Perdido, banco de itens com busca e painel lateral, masmorras e chefes, as 12 canções da ocarina, as 36 Peças de Coração com checklist, as 100 Skulltulas Douradas com checklist e filtros e a missão da Espada Biggoron.
 
 ## Como contribuir
 

@@ -1,0 +1,208 @@
+---
+// Painel lateral com a ficha do item. Os links continuam funcionando sem JavaScript:
+// levam direto à ficha na página do banco de itens.
+---
+
+<dialog class="item-drawer" data-item-drawer aria-labelledby="item-drawer-title">
+	<div class="drawer-head">
+		<p class="drawer-kicker">Ficha do item</p>
+		<button type="button" class="drawer-close" data-drawer-close aria-label="Fechar ficha do item">✕</button>
+	</div>
+	<div class="drawer-body" data-drawer-body></div>
+	<p class="drawer-foot">
+		<a href="#" data-drawer-full>Abrir no banco de itens →</a>
+	</p>
+</dialog>
+
+<script>
+	const dialog = document.querySelector<HTMLDialogElement>('[data-item-drawer]');
+	if (dialog) {
+		const body = dialog.querySelector<HTMLElement>('[data-drawer-body]')!;
+		const full = dialog.querySelector<HTMLAnchorElement>('[data-drawer-full]')!;
+		const pages = new Map<string, Promise<Document>>();
+
+		// A página de itens é baixada uma vez e reaproveitada para todas as fichas.
+		const load = (url: string) => {
+			let page = pages.get(url);
+			if (!page) {
+				page = fetch(url)
+					.then((r) => {
+						if (!r.ok) throw new Error(`HTTP ${r.status}`);
+						return r.text();
+					})
+					.then((html) => new DOMParser().parseFromString(html, 'text/html'));
+				page.catch(() => pages.delete(url));
+				pages.set(url, page);
+			}
+			return page;
+		};
+
+		let opener: HTMLElement | undefined;
+		const itemsPage = (link: HTMLAnchorElement) => {
+			const url = new URL(link.href);
+			return url.pathname === location.pathname ? undefined : url;
+		};
+
+		// Começa a baixar a página de itens quando o ponteiro ou o foco chega num link.
+		const warm = (e: Event) => {
+			const link = (e.target as Element).closest?.<HTMLAnchorElement>('a.item-link[data-item]');
+			const url = link && itemsPage(link);
+			if (url) load(url.origin + url.pathname).catch(() => {});
+		};
+		document.addEventListener('pointerover', warm);
+		document.addEventListener('focusin', warm);
+
+		document.addEventListener('click', async (e) => {
+			if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+			const link = (e.target as Element).closest<HTMLAnchorElement>('a.item-link[data-item]');
+			if (!link) return;
+			// Na própria página de itens, a âncora já resolve.
+			const url = itemsPage(link);
+			if (!url) return;
+			e.preventDefault();
+			if (dialog.open) return;
+			opener = link;
+			try {
+				const doc = await load(url.origin + url.pathname);
+				const card = doc.getElementById(url.hash.slice(1));
+				if (!card) throw new Error('ficha não encontrada');
+				const clone = card.cloneNode(true) as HTMLElement;
+				clone.removeAttribute('id');
+				clone.hidden = false;
+				const title = clone.querySelector('h2');
+				if (title) {
+					title.id = 'item-drawer-title';
+					title.removeAttribute('tabindex');
+				}
+				body.replaceChildren(clone);
+				full.href = link.href;
+				dialog.showModal();
+			} catch {
+				location.href = link.href;
+			}
+		});
+
+		// Devolve o foco ao link que abriu o painel (o Safari não foca links ao clicar).
+		dialog.addEventListener('close', () => opener?.focus());
+		dialog.querySelector('[data-drawer-close]')!.addEventListener('click', () => dialog.close());
+		// Clique fora do painel (no fundo escurecido) fecha.
+		dialog.addEventListener('click', (e) => {
+			if (e.target === dialog) dialog.close();
+		});
+	}
+</script>
+
+<style>
+	.item-drawer {
+		margin: 0 0 0 auto;
+		width: min(28rem, 100vw);
+		max-width: 100vw;
+		height: 100dvh;
+		max-height: 100dvh;
+		padding: 0;
+		border: 0;
+		border-inline-start: 1px solid var(--sl-color-gray-5);
+		background: var(--sl-color-bg);
+		color: var(--sl-color-text);
+		box-shadow: var(--sl-shadow-lg);
+	}
+	.item-drawer[open] {
+		display: flex;
+		flex-direction: column;
+	}
+	:global(html:has(dialog.item-drawer[open])) {
+		overflow: hidden;
+	}
+	.item-drawer::backdrop {
+		background: rgb(0 0 0 / 0.55);
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.item-drawer[open] {
+			animation: drawer-in 0.18s ease-out;
+		}
+		@keyframes drawer-in {
+			from {
+				transform: translateX(2rem);
+				opacity: 0;
+			}
+		}
+	}
+	.drawer-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.75rem 1rem;
+		border-bottom: 1px solid var(--sl-color-gray-5);
+	}
+	.drawer-kicker {
+		margin: 0;
+		font-size: var(--sl-text-xs);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--sl-color-gray-2);
+	}
+	.drawer-close {
+		font: inherit;
+		font-size: 1.1rem;
+		line-height: 1;
+		min-width: 2.5rem;
+		min-height: 2.5rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.5rem;
+		background: transparent;
+		color: var(--sl-color-white);
+		cursor: pointer;
+	}
+	.drawer-close:hover {
+		background: var(--sl-color-gray-6);
+	}
+	.drawer-body {
+		flex: 1;
+		overflow-y: auto;
+		padding: 1rem;
+	}
+	.drawer-foot {
+		margin: 0;
+		padding: 0.75rem 1rem;
+		border-top: 1px solid var(--sl-color-gray-5);
+	}
+	.drawer-foot a {
+		color: var(--sl-color-text-accent);
+		font-weight: 600;
+	}
+
+	/* A ficha vem da página de itens; aqui ela recebe o estilo do painel. */
+	.drawer-body :global(h2) {
+		margin: 0;
+		font-size: var(--sl-text-2xl);
+		color: var(--sl-color-white);
+	}
+	.drawer-body :global(h3) {
+		margin: 1rem 0 0.25rem;
+		font-size: var(--sl-text-base);
+		color: var(--sl-color-white);
+	}
+	.drawer-body :global(p),
+	.drawer-body :global(ul) {
+		margin: 0.5rem 0 0;
+	}
+	.drawer-body :global(.item-meta) {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		align-items: center;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-2);
+	}
+	.drawer-body :global(.badge) {
+		padding: 0.05rem 0.5rem;
+		border: 1px solid var(--sl-color-gray-4);
+		border-radius: 999px;
+		font-size: var(--sl-text-xs);
+	}
+	.drawer-body :global(.badge-req) {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-accent-high);
+	}
+</style>

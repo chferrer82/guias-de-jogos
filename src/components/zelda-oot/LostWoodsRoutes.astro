@@ -1,5 +1,6 @@
 ---
 import { lostWoodsRoutes, type Turn } from '../../data/zelda-oot/lost-woods';
+import ItemLink from './ItemLink.astro';
 
 const arrow: Record<Turn, string> = { esquerda: '←', direita: '→', reto: '↑' };
 const ageLabel = { criança: 'Criança', adulto: 'Adulto', ambas: 'Criança e adulto' } as const;
@@ -22,7 +23,18 @@ const ageLabel = { criança: 'Criança', adulto: 'Adulto', ambas: 'Criança e ad
 				</p>
 				<p>
 					<strong>{ageLabel[r.age]}</strong>
-					{r.needs.length > 0 && <> · Precisa de: {r.needs.join(', ')}</>}
+					{r.needs.length > 0 && (
+						<>
+							{' '}
+							· Precisa de:{' '}
+							{r.needs.map((n, i) => (
+								<>
+									{i > 0 && ', '}
+									<ItemLink text={n} />
+								</>
+							))}
+						</>
+					)}
 				</p>
 				<p>{r.what}</p>
 			</li>
