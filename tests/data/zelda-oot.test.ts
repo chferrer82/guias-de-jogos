@@ -10,6 +10,8 @@ import {
 	skulltulaRewards,
 } from '../../src/data/zelda-oot/collectibles';
 import { goldSkulltulas } from '../../src/data/zelda-oot/skulltulas';
+import { lostWoodsRoutes } from '../../src/data/zelda-oot/lost-woods';
+import { places } from '../../src/data/zelda-oot/places';
 
 const unique = <T>(list: T[]) => new Set(list).size === list.length;
 
@@ -217,5 +219,68 @@ describe('Espada Biggoron', () => {
 
 	it('marca os itens com tempo limite', () => {
 		expect(biggoronTrade.filter((t) => t.timed).map((t) => t.step)).toEqual([4, 9, 10]);
+	});
+});
+
+describe('Bosque Perdido', () => {
+	const route = (id: string) => lostWoodsRoutes.find((r) => r.id === id)!.path;
+
+	it('a rota do Prado Sagrado é direita, esquerda, direita, esquerda, reto, esquerda, direita', () => {
+		expect(route('prado')).toEqual(['direita', 'esquerda', 'direita', 'esquerda', 'reto', 'esquerda', 'direita']);
+	});
+
+	// As fontes concordam que estes caminhos começam iguais à rota do Prado.
+	it('Goron, Zora e Teatro Deku seguem o começo da rota do Prado', () => {
+		const prado = route('prado');
+		expect(route('goron')).toEqual(prado.slice(0, 2));
+		expect(route('zora')).toEqual(prado.slice(0, 3));
+		expect(route('teatro-deku')).toEqual([...prado.slice(0, 4), 'esquerda']);
+	});
+
+	it('cada rota tem id único, curvas válidas e explicação', () => {
+		expect(unique(lostWoodsRoutes.map((r) => r.id))).toBe(true);
+		for (const r of lostWoodsRoutes) {
+			expect(r.path.length, r.id).toBeGreaterThan(0);
+			for (const t of r.path) expect(['esquerda', 'direita', 'reto']).toContain(t);
+			expect(r.what.length, r.id).toBeGreaterThan(40);
+		}
+	});
+});
+
+describe('Guia por local', () => {
+	const dungeonNames = new Set(dungeons.map((d) => d.name));
+	const placeOf = (region: string) => places.filter((p) => p.regions.includes(region));
+
+	it('tem ids únicos e conteúdo nas duas idades', () => {
+		expect(unique(places.map((p) => p.id))).toBe(true);
+		for (const p of places) {
+			for (const side of [p.child, p.adult]) {
+				expect(side.open.length + side.blocked.length, p.id).toBeGreaterThan(0);
+			}
+		}
+	});
+
+	it('toda região de Peça de Coração do mundo aberto pertence a exatamente um local', () => {
+		for (const hp of heartPieces.filter((p) => !dungeonNames.has(p.region))) {
+			expect(placeOf(hp.region), `#${hp.id} ${hp.region}`).toHaveLength(1);
+		}
+	});
+
+	it('toda Skulltula do mundo aberto pertence a exatamente um local', () => {
+		for (const s of goldSkulltulas.filter((s) => s.kind === 'mundo')) {
+			expect(placeOf(s.region), `#${s.id} ${s.region}`).toHaveLength(1);
+		}
+	});
+
+	it('não cita regiões que não existem nas listas', () => {
+		const known = new Set([...heartPieces.map((p) => p.region), ...goldSkulltulas.map((s) => s.region)]);
+		for (const p of places) for (const r of p.regions) expect(known, `${p.id}: ${r}`).toContain(r);
+	});
+
+	it('somando os locais dá 56 Skulltulas e todas as Peças fora das masmorras', () => {
+		const all = places.flatMap((p) => p.regions);
+		expect(goldSkulltulas.filter((s) => all.includes(s.region))).toHaveLength(56);
+		const outside = heartPieces.filter((p) => !dungeonNames.has(p.region));
+		expect(heartPieces.filter((p) => all.includes(p.region))).toHaveLength(outside.length);
 	});
 });

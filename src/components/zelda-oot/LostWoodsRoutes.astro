@@ -1,0 +1,69 @@
+---
+import { lostWoodsRoutes, type Turn } from '../../data/zelda-oot/lost-woods';
+
+const arrow: Record<Turn, string> = { esquerda: '←', direita: '→', reto: '↑' };
+const ageLabel = { criança: 'Criança', adulto: 'Adulto', ambas: 'Criança e adulto' } as const;
+---
+
+<ol class="routes" role="list">
+	{
+		lostWoodsRoutes.map((r) => (
+			<li id={`rota-${r.id}`}>
+				<h3>{r.destination}</h3>
+				<p class="route-path not-content" role="img" aria-label={`Rota: ${r.path.map((t, i) => `${i + 1}, ${t}`).join('; ')}`}>
+					{r.path.map((t, i) => (
+						<span class="turn" aria-hidden="true">
+							<span class="turn-arrow">{arrow[t]}</span>
+							<span class="turn-label">
+								{i + 1}. {t}
+							</span>
+						</span>
+					))}
+				</p>
+				<p>
+					<strong>{ageLabel[r.age]}</strong>
+					{r.needs.length > 0 && <> · Precisa de: {r.needs.join(', ')}</>}
+				</p>
+				<p>{r.what}</p>
+			</li>
+		))
+	}
+</ol>
+
+<style>
+	.routes {
+		list-style: none;
+		padding-inline-start: 0;
+	}
+	.routes > li + li {
+		margin-top: 1.5rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--sl-color-gray-5);
+	}
+	.route-path {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 0.5rem;
+	}
+	.turn {
+		display: inline-flex;
+		flex-direction: column;
+		align-items: center;
+		min-width: 4.5rem;
+		padding: 0.35rem 0.5rem;
+		border: 1px solid var(--sl-color-gray-4);
+		border-radius: 0.5rem;
+		background: var(--sl-color-gray-6);
+	}
+	.turn-arrow {
+		font-size: 1.5rem;
+		font-weight: 700;
+		line-height: 1.2;
+		color: var(--sl-color-accent-high);
+	}
+	.turn-label {
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-2);
+	}
+</style>

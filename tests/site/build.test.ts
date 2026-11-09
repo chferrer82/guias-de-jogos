@@ -22,6 +22,8 @@ const EXPECTED = [
 	'contribuir/',
 	'zelda-ocarina-of-time/',
 	'zelda-ocarina-of-time/primeiros-passos/',
+	'zelda-ocarina-of-time/guia-por-local/',
+	'zelda-ocarina-of-time/bosque-perdido/',
 	'zelda-ocarina-of-time/detonado-crianca/',
 	'zelda-ocarina-of-time/detonado-adulto/',
 	'zelda-ocarina-of-time/masmorras/',
@@ -76,6 +78,13 @@ describe('Site gerado', () => {
 		expect(hpHtml.match(/<input type="checkbox"/g)).toHaveLength(36);
 		const gsHtml = read(BASE + 'zelda-ocarina-of-time/skulltulas-douradas/');
 		expect(gsHtml.match(/<input type="checkbox"/g)).toHaveLength(100);
+	});
+
+	it('mostra as 7 rotas do bosque e os 19 locais do guia', () => {
+		const lw = read(BASE + 'zelda-ocarina-of-time/bosque-perdido/');
+		expect(lw.match(/<li id="rota-/g)).toHaveLength(7);
+		const guide = read(BASE + 'zelda-ocarina-of-time/guia-por-local/');
+		expect(guide.match(/<div class="age[ "]/g)).toHaveLength(19 * 2);
 	});
 
 	it('continua leve: cada página HTML fica abaixo de 150 KB', () => {

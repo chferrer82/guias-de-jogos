@@ -27,6 +27,8 @@ export default defineConfig({
 						{ label: 'Primeiros passos', slug: 'zelda-ocarina-of-time/primeiros-passos' },
 						{ label: 'Detonado: Link criança', slug: 'zelda-ocarina-of-time/detonado-crianca' },
 						{ label: 'Detonado: Link adulto', slug: 'zelda-ocarina-of-time/detonado-adulto' },
+						{ label: 'Guia por local', slug: 'zelda-ocarina-of-time/guia-por-local' },
+						{ label: 'Bosque Perdido: rotas', slug: 'zelda-ocarina-of-time/bosque-perdido' },
 						{ label: 'Masmorras e chefes', slug: 'zelda-ocarina-of-time/masmorras' },
 						{ label: 'Canções da ocarina', slug: 'zelda-ocarina-of-time/cancoes' },
 						{ label: 'Peças de Coração', slug: 'zelda-ocarina-of-time/pecas-de-coracao' },

@@ -1,0 +1,133 @@
+---
+import { places, type AgeSide } from '../../data/zelda-oot/places';
+import { heartPieces } from '../../data/zelda-oot/collectibles';
+import { goldSkulltulas } from '../../data/zelda-oot/skulltulas';
+
+// As contagens saem das listas de colecionáveis, para nunca ficarem desatualizadas.
+const countsFor = (regions: string[]) => {
+	const hp = heartPieces.filter((p) => regions.includes(p.region));
+	const gs = goldSkulltulas.filter((s) => regions.includes(s.region));
+	return { hp: hp.length, gs: gs.length };
+};
+
+const sides: { key: 'child' | 'adult'; title: string }[] = [
+	{ key: 'child', title: 'Link criança' },
+	{ key: 'adult', title: 'Link adulto' },
+];
+const side = (p: (typeof places)[number], key: 'child' | 'adult'): AgeSide => p[key];
+---
+
+<div class="places">
+	{
+		places.map((p) => {
+			const c = countsFor(p.regions);
+			return (
+				<section id={p.id}>
+					<h2>{p.name}</h2>
+					<p class="counts">
+						{c.hp} {c.hp === 1 ? 'Peça' : 'Peças'} de Coração ·{' '}
+						{c.gs} {c.gs === 1 ? 'Skulltula Dourada' : 'Skulltulas Douradas'}
+					</p>
+					<div class="ages">
+						{sides.map(({ key, title }) => {
+							const s = side(p, key);
+							return (
+								<div class="age">
+									<h3>{title}</h3>
+									<p class="label label-open" id={`${p.id}-${key}-open`}>
+										Liberado
+									</p>
+									{s.open.length ? (
+										<ul class="open" aria-labelledby={`${p.id}-${key}-open`}>
+											{s.open.map((t) => (
+												<li>{t}</li>
+											))}
+										</ul>
+									) : (
+										<p class="none">Nada nesta idade.</p>
+									)}
+									<p class="label label-blocked" id={`${p.id}-${key}-blocked`}>
+										Bloqueado
+									</p>
+									{s.blocked.length ? (
+										<ul class="blocked" aria-labelledby={`${p.id}-${key}-blocked`}>
+											{s.blocked.map((t) => (
+												<li>{t}</li>
+											))}
+										</ul>
+									) : (
+										<p class="none">Nada importante.</p>
+									)}
+								</div>
+							);
+						})}
+					</div>
+					{p.changes.length > 0 && (
+						<aside class="changes">
+							<strong>Muda durante o jogo:</strong> {p.changes.join(' ')}
+						</aside>
+					)}
+				</section>
+			);
+		})
+	}
+</div>
+
+<style>
+	.places > section + section {
+		margin-top: 2.5rem;
+	}
+	.counts {
+		color: var(--sl-color-gray-2);
+		font-size: var(--sl-text-sm);
+	}
+	.ages {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+		gap: 1rem;
+	}
+	.age {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.75rem;
+		padding: 0.75rem 1rem;
+	}
+	.age h3 {
+		margin-top: 0;
+		font-size: var(--sl-text-lg);
+	}
+	.label {
+		font-weight: 700;
+		font-size: var(--sl-text-sm);
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+	.label-open {
+		color: var(--sl-color-green-high);
+	}
+	.label-blocked {
+		color: var(--sl-color-red-high);
+	}
+	.age ul {
+		padding-inline-start: 1.5rem;
+	}
+	/* Ícones de apoio; o rótulo em texto acima já diz se está liberado ou bloqueado. */
+	.open li::marker {
+		content: '✔  ';
+		color: var(--sl-color-green-high);
+	}
+	.blocked li::marker {
+		content: '✖  ';
+		color: var(--sl-color-red-high);
+	}
+	.none {
+		color: var(--sl-color-gray-3);
+		font-style: italic;
+	}
+	.changes {
+		margin-top: 0.75rem;
+		padding: 0.5rem 0.75rem;
+		border-inline-start: 4px solid var(--sl-color-orange-high);
+		background: var(--sl-color-gray-6);
+		border-radius: 0.25rem;
+	}
+</style>
