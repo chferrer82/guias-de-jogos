@@ -1,0 +1,51 @@
+---
+import type { Note } from '../../data/zelda-oot/songs';
+
+interface Props {
+	notes: Note[];
+}
+
+const labels: Record<Note, string> = {
+	A: 'A',
+	'↑': 'C para cima',
+	'↓': 'C para baixo',
+	'←': 'C para a esquerda',
+	'→': 'C para a direita',
+};
+
+const { notes } = Astro.props;
+const spoken = notes.map((n) => labels[n]).join(', ');
+---
+
+<span class="notes not-content" role="img" aria-label={spoken}>
+	{notes.map((n) => <kbd class:list={['note', n === 'A' ? 'note-a' : 'note-c']} aria-hidden="true">{n}</kbd>)}
+</span>
+
+<style>
+	.notes {
+		display: inline-flex;
+		flex-wrap: nowrap;
+		gap: 0.25rem;
+	}
+	.note {
+		display: inline-grid;
+		place-items: center;
+		min-width: 1.75rem;
+		height: 1.75rem;
+		border-radius: 999px;
+		font-weight: 700;
+		font-family: var(--sl-font-system);
+		line-height: 1;
+		/* Mantém o contorno no modo de alto contraste, que remove as cores de fundo. */
+		border: 1px solid currentColor;
+	}
+	/* Cores inspiradas nos botões do controle: A azul, C amarelo. */
+	.note-a {
+		background: #1d4ed8;
+		color: #fff;
+	}
+	.note-c {
+		background: #facc15;
+		color: #1f2937;
+	}
+</style>

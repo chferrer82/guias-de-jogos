@@ -1,0 +1,31 @@
+---
+import { dungeons } from '../../data/zelda-oot/dungeons';
+
+const withBoss = [...dungeons].filter((d) => d.boss && d.bossTip).sort((a, b) => a.order - b.order);
+---
+
+<dl class="boss-tips">
+	{
+		withBoss.map((d) => (
+			<div>
+				<dt>
+					{d.boss} <small>({d.name})</small>
+				</dt>
+				<dd>{d.bossTip}</dd>
+			</div>
+		))
+	}
+</dl>
+
+<style>
+	.boss-tips > div + div {
+		margin-top: 0.75rem;
+	}
+	.boss-tips dt {
+		font-weight: 700;
+	}
+	.boss-tips dd {
+		margin-inline-start: 0;
+		margin-top: 0.25rem;
+	}
+</style>

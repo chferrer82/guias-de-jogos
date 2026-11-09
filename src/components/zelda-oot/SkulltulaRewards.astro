@@ -1,0 +1,25 @@
+---
+import { skulltulaRewards } from '../../data/zelda-oot/collectibles';
+---
+
+<div class="table-wrap" tabindex="0" role="region" aria-label="Tabela de recompensas das Skulltulas">
+	<table class="compact">
+		<caption class="sr-only">Recompensas da Casa da Skulltula por número de fichas</caption>
+		<thead>
+			<tr>
+				<th scope="col">Fichas</th>
+				<th scope="col">Recompensa</th>
+			</tr>
+		</thead>
+		<tbody>
+			{
+				skulltulaRewards.map((r) => (
+					<tr>
+						<td>{r.tokens}</td>
+						<td>{r.reward}</td>
+					</tr>
+				))
+			}
+		</tbody>
+	</table>
+</div>

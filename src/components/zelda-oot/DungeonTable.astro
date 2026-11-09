@@ -1,0 +1,40 @@
+---
+import { dungeons } from '../../data/zelda-oot/dungeons';
+
+const list = [...dungeons].sort((a, b) => a.order - b.order);
+---
+
+<div class="table-wrap" tabindex="0" role="region" aria-label="Tabela de masmorras">
+	<table>
+		<caption class="sr-only">Masmorras na ordem recomendada, com idade, item, chefe e recompensa</caption>
+		<thead>
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Masmorra</th>
+				<th scope="col">Idade</th>
+				<th scope="col">Item principal</th>
+				<th scope="col">Chefe</th>
+				<th scope="col">Recompensa</th>
+			</tr>
+		</thead>
+		<tbody>
+			{
+				list.map((d) => (
+					<tr id={d.id}>
+						<td>{d.order}</td>
+						<th scope="row">
+							{d.name}
+							{!d.required && <small> (opcional)</small>}
+							<br />
+							<small lang="en">{d.nameEn}</small>
+						</th>
+						<td>{d.age}</td>
+						<td>{d.item}</td>
+						<td>{d.boss ?? '—'}</td>
+						<td>{d.reward ?? '—'}</td>
+					</tr>
+				))
+			}
+		</tbody>
+	</table>
+</div>

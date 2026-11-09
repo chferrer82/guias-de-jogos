@@ -1,0 +1,31 @@
+/* Paleta verde e dourada, no clima de Hyrule. */
+:root {
+	--sl-color-accent-low: #12301f;
+	--sl-color-accent: #2f9e5b;
+	--sl-color-accent-high: #c8f0d6;
+}
+:root[data-theme='light'] {
+	--sl-color-accent-low: #d4f2df;
+	--sl-color-accent: #1d7a43;
+	--sl-color-accent-high: #0f3d22;
+}
+
+/* Tabelas largas rolam dentro do próprio bloco no celular. */
+.table-wrap {
+	overflow-x: auto;
+}
+.table-wrap:focus-visible {
+	outline: 2px solid var(--sl-color-accent-high);
+	outline-offset: 2px;
+}
+.table-wrap table {
+	display: table;
+	width: 100%;
+	min-width: 40rem;
+}
+.table-wrap table.wide {
+	min-width: 56rem;
+}
+.table-wrap table.compact {
+	min-width: 0;
+}

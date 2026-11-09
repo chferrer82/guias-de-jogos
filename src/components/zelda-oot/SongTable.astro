@@ -1,0 +1,45 @@
+---
+import { songs, type Song } from '../../data/zelda-oot/songs';
+import SongNotes from './SongNotes.astro';
+
+interface Props {
+	kind: Song['kind'];
+}
+
+const { kind } = Astro.props;
+const list = songs.filter((s) => s.kind === kind);
+---
+
+<div class="table-wrap" tabindex="0" role="region" aria-label={`Tabela de canções: ${kind}`}>
+	<table class="wide">
+		<caption class="sr-only">Canções {kind === 'normal' ? 'normais' : 'de teletransporte'}, com notas, onde aprender e efeito</caption>
+		<thead>
+			<tr>
+				<th scope="col">Canção</th>
+				<th scope="col">Notas</th>
+				<th scope="col">Onde aprender</th>
+				<th scope="col">Para que serve</th>
+			</tr>
+		</thead>
+		<tbody>
+			{
+				list.map((s) => (
+					<tr id={s.id}>
+						<th scope="row">
+							{s.name}
+							<br />
+							<small lang="en">{s.nameEn}</small>
+						</th>
+						<td>
+							<SongNotes notes={s.notes} />
+						</td>
+						<td>
+							{s.where}. Ensinada por {s.learnedFrom}, como {s.age}.
+						</td>
+						<td>{s.effect}</td>
+					</tr>
+				))
+			}
+		</tbody>
+	</table>
+</div>

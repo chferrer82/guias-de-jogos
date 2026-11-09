@@ -1,0 +1,48 @@
+---
+title: Guias de Jogos
+description: Portal leve e gratuito de guias de jogos em português, feito pela e para a comunidade gamer.
+template: splash
+hero:
+  tagline: Detonados, colecionáveis e dicas em português, sem anúncios e sem enrolação. Feito pela comunidade, para a comunidade.
+  actions:
+    - text: Começar por Ocarina of Time
+      link: zelda-ocarina-of-time/
+      icon: right-arrow
+    - text: Como contribuir
+      link: contribuir/
+      icon: pencil
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Guias disponíveis
+
+<CardGrid>
+	<LinkCard
+		title="The Legend of Zelda: Ocarina of Time"
+		description="Detonado completo, 12 canções, 36 Peças de Coração com checklist, Skulltulas Douradas e a Espada Biggoron."
+		href="zelda-ocarina-of-time/"
+	/>
+</CardGrid>
+
+## Por que este portal existe
+
+<CardGrid>
+	<Card title="Leve" icon="rocket">
+		Páginas estáticas que carregam rápido até em celular antigo ou internet fraca.
+	</Card>
+	<Card title="Aberto" icon="github">
+		Todo o conteúdo fica num repositório público. Achou um erro? Clique em "Editar página" e corrija.
+	</Card>
+	<Card title="Conferido" icon="approve-check">
+		Listas como canções e Peças de Coração ficam em arquivos de dados validados por testes automáticos.
+	</Card>
+	<Card title="Em português" icon="translate">
+		Nomes oficiais em inglês aparecem ao lado, para você reconhecer no jogo.
+	</Card>
+</CardGrid>
+
+:::note[Aviso]
+Site de fãs, sem vínculo com a Nintendo ou outras empresas. Os nomes dos jogos e personagens pertencem aos seus donos.
+:::

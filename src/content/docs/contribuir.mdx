@@ -1,0 +1,27 @@
+---
+title: Como contribuir
+description: Como corrigir, melhorar ou criar guias de jogos neste portal aberto da comunidade.
+---
+
+Este portal é da comunidade. Qualquer pessoa pode corrigir um erro, completar uma lista ou propor um guia novo.
+
+## Achou um erro?
+
+- **Correção rápida:** clique em **Editar página** no fim de qualquer guia. O GitHub abre o arquivo, você corrige e envia como sugestão (pull request).
+- **Não sabe mexer no GitHub?** Abra uma [issue no repositório](https://github.com/chferrer82/guias-de-jogos/issues) contando o que está errado, em que página e em qual versão do jogo.
+
+## Regras dos guias
+
+1. **Escreva com suas palavras.** Não copie texto de outros sites, revistas ou guias oficiais.
+2. **Diga a versão do jogo** quando algo mudar entre versões (por exemplo N64, 3DS ou remake).
+3. **Confira antes de enviar.** Se possível, teste no jogo ou cruze pelo menos duas fontes.
+4. **Use o nome em português e o oficial em inglês** na primeira vez que citar um item ou lugar.
+5. **Sem spoilers gratuitos** fora das páginas de detonado.
+
+## Listas são dados
+
+Listas como canções, masmorras e Peças de Coração ficam em arquivos `src/data/<jogo>/*.ts`. Os testes automáticos conferem, por exemplo, que existem 36 Peças de Coração sem números repetidos. Se você mudar uma lista, rode `npm test` antes de enviar.
+
+## Quer um jogo novo?
+
+Abra uma issue com o nome do jogo. Guias novos seguem a mesma estrutura: visão geral, primeiros passos, detonado e colecionáveis.

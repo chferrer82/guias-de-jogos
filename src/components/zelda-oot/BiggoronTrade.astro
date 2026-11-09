@@ -1,0 +1,26 @@
+---
+import { biggoronTrade } from '../../data/zelda-oot/collectibles';
+---
+
+<ol class="trade">
+	{
+		biggoronTrade.map((t) => (
+			<li>
+				<strong>{t.item}</strong>
+				{t.timed && <span class="timed"> · tem tempo limite</span>}
+				<br />
+				{t.giveTo}
+			</li>
+		))
+	}
+</ol>
+
+<style>
+	.trade li + li {
+		margin-top: 0.5rem;
+	}
+	.timed {
+		color: var(--sl-color-orange-high);
+		font-weight: 600;
+	}
+</style>
