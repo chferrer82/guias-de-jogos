@@ -9,6 +9,7 @@ import {
 	heartPieces,
 	skulltulaRewards,
 } from '../../src/data/zelda-oot/collectibles';
+import { goldSkulltulas } from '../../src/data/zelda-oot/skulltulas';
 
 const unique = <T>(list: T[]) => new Set(list).size === list.length;
 
@@ -136,6 +137,74 @@ describe('Skulltulas Douradas', () => {
 		const tokens = skulltulaRewards.map((r) => r.tokens);
 		expect(tokens).toEqual([...tokens].sort((a, b) => a - b));
 		expect(tokens.at(-1)).toBe(GOLD_SKULLTULA_TOTAL);
+	});
+
+	it('lista as 100, numeradas de 1 a 100: 56 no mundo e 44 nas masmorras', () => {
+		expect(goldSkulltulas).toHaveLength(GOLD_SKULLTULA_TOTAL);
+		expect(goldSkulltulas.map((s) => s.id)).toEqual(Array.from({ length: 100 }, (_, i) => i + 1));
+		expect(goldSkulltulas.filter((s) => s.kind === 'mundo')).toHaveLength(56);
+		expect(goldSkulltulas.filter((s) => s.kind === 'masmorra')).toHaveLength(44);
+	});
+
+	// Contagem por área em que as duas listas de referência concordam.
+	it('tem a quantidade certa em cada área', () => {
+		const counts: Record<string, number> = {};
+		for (const s of goldSkulltulas) counts[s.region] = (counts[s.region] ?? 0) + 1;
+		expect(counts).toEqual({
+			'Floresta Kokiri': 3,
+			'Bosque Perdido': 3,
+			'Prado Sagrado da Floresta': 1,
+			'Campo de Hyrule': 2,
+			'Cidade do Castelo e Castelo de Hyrule': 4,
+			'Rancho Lon Lon': 4,
+			'Vila Kakariko': 6,
+			'Cemitério de Kakariko': 2,
+			'Trilha da Montanha da Morte': 4,
+			'Cidade Goron': 2,
+			'Cratera da Montanha da Morte': 2,
+			'Rio Zora': 4,
+			'Domínio Zora': 1,
+			'Fonte Zora': 3,
+			'Lago Hylia': 5,
+			'Vale Gerudo': 4,
+			'Fortaleza Gerudo': 2,
+			'Deserto Assombrado': 1,
+			'Colosso do Deserto': 3,
+			'Interior da Árvore Deku': 4,
+			'Caverna dos Dodongos': 5,
+			'Barriga do Lorde Jabu-Jabu': 4,
+			'Templo da Floresta': 5,
+			'Templo do Fogo': 5,
+			'Caverna de Gelo': 3,
+			'Templo da Água': 5,
+			'Fundo do Poço': 3,
+			'Templo da Sombra': 5,
+			'Templo do Espírito': 5,
+		});
+	});
+
+	it('as masmorras da lista existem na tabela de masmorras', () => {
+		const dungeonNames = new Set(dungeons.map((d) => d.name));
+		for (const s of goldSkulltulas.filter((s) => s.kind === 'masmorra')) expect(dungeonNames, s.region).toContain(s.region);
+	});
+
+	it('cada uma tem explicação e só pede itens conhecidos', () => {
+		const known = new Set([
+			'Insetos', 'Hookshot', 'Longshot', 'Bombas', 'Bumerangue', 'Estilingue', 'Feijão Mágico', 'Fogo', 'Fogo Azul',
+			'Martelo Megaton', 'Botas de Ferro', 'Manoplas de Prata', 'Lente da Verdade', 'Chaves pequenas', 'Ataque giratório',
+			'Canção das Tempestades', 'Canção do Tempo', 'Canção do Espantalho', 'Bolero do Fogo', 'Réquiem do Espírito',
+		]);
+		for (const s of goldSkulltulas) {
+			expect(s.where.length, `#${s.id}`).toBeGreaterThan(20);
+			for (const n of s.needs) expect(known, `#${s.id}: ${n}`).toContain(n);
+		}
+	});
+
+	it('itens de adulto não aparecem em Skulltulas só de criança', () => {
+		const adultOnly = new Set(['Hookshot', 'Longshot', 'Martelo Megaton', 'Botas de Ferro', 'Fogo Azul']);
+		for (const s of goldSkulltulas.filter((s) => s.age === 'criança')) {
+			for (const n of s.needs) expect(adultOnly.has(n), `#${s.id}: ${n}`).toBe(false);
+		}
 	});
 });
 

@@ -6,7 +6,7 @@ Portal leve, gratuito e aberto de guias de jogos em português, feito pela e par
 
 ## Guias disponíveis
 
-- **The Legend of Zelda: Ocarina of Time**: detonado (criança e adulto), masmorras e chefes, as 12 canções da ocarina, as 36 Peças de Coração com checklist, as recompensas das Skulltulas Douradas e a missão da Espada Biggoron.
+- **The Legend of Zelda: Ocarina of Time**: detonado (criança e adulto), masmorras e chefes, as 12 canções da ocarina, as 36 Peças de Coração com checklist, as 100 Skulltulas Douradas com checklist e filtros e a missão da Espada Biggoron.
 
 ## Como contribuir
 

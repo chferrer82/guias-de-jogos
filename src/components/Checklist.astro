@@ -1,0 +1,218 @@
+---
+export interface ChecklistItem {
+	id: number;
+	title: string;
+	body: string;
+	/** Rótulos curtos mostrados no item e usados pelos filtros. */
+	tags?: string[];
+}
+
+export interface ChecklistGroup {
+	title: string;
+	items: ChecklistItem[];
+}
+
+interface Props {
+	/** Chave do localStorage; não mude depois de publicado, ou o progresso salvo se perde. */
+	storageKey: string;
+	/** Prefixo dos ids de cada item, para links como #peca-12. */
+	idPrefix: string;
+	unit: string;
+	groups: ChecklistGroup[];
+	/** Rótulos que viram botões de filtro, além de "Todas" e "Faltando". */
+	filters?: string[];
+}
+
+const { storageKey, idPrefix, unit, groups, filters = [] } = Astro.props;
+const total = groups.reduce((n, g) => n + g.items.length, 0);
+const statusId = `${idPrefix}-status`;
+const filterName = `${idPrefix}-filtro`;
+---
+
+<div class="checklist" data-storage-key={storageKey}>
+	<p class="cl-progress">
+		<span role="status" id={statusId}><strong data-count>0</strong> de {total} {unit} marcadas</span>
+		<button type="button" class="cl-reset" data-reset aria-describedby={statusId}>Limpar marcações</button>
+	</p>
+
+	<fieldset class="cl-filters">
+		<legend>Mostrar</legend>
+		{
+			['Todas', 'Faltando', ...filters].map((f, i) => (
+				<label>
+					<input type="radio" name={filterName} value={f} checked={i === 0} />
+					{f}
+				</label>
+			))
+		}
+	</fieldset>
+
+	{
+		groups.map((group) => (
+			<section data-group>
+				<h2>{group.title}</h2>
+				<ul class="cl-list">
+					{group.items.map((item) => (
+						<li id={`${idPrefix}-${item.id}`} data-tags={(item.tags ?? []).join('|')}>
+							<label>
+								<input type="checkbox" value={item.id} />
+								<span>
+									<strong>
+										#{item.id} · {item.title}
+									</strong>
+									{item.tags?.map((t) => (
+										<span class="cl-tag">{t}</span>
+									))}
+									<br />
+									{item.body}
+								</span>
+							</label>
+						</li>
+					))}
+				</ul>
+			</section>
+		))
+	}
+</div>
+
+<script>
+	// O progresso fica só neste navegador; se o armazenamento falhar, a lista funciona sem salvar.
+	for (const root of document.querySelectorAll<HTMLElement>('.checklist')) {
+		const key = root.dataset.storageKey!;
+		const boxes = [...root.querySelectorAll<HTMLInputElement>('.cl-list input[type="checkbox"]')];
+		const count = root.querySelector<HTMLElement>('[data-count]')!;
+		// O navegador pode restaurar o filtro marcado ao voltar para a página.
+		let filter = root.querySelector<HTMLInputElement>('.cl-filters input:checked')?.value ?? 'Todas';
+
+		const load = (): string[] => {
+			try {
+				const value: unknown = JSON.parse(localStorage.getItem(key) ?? '[]');
+				return Array.isArray(value) ? value.map(String) : [];
+			} catch {
+				return [];
+			}
+		};
+		const save = () => {
+			try {
+				localStorage.setItem(key, JSON.stringify(boxes.filter((b) => b.checked).map((b) => b.value)));
+			} catch {
+				// Navegação privada ou armazenamento bloqueado: segue sem salvar.
+			}
+		};
+		const applyFilter = () => {
+			for (const b of boxes) {
+				const li = b.closest('li')!;
+				const tags = li.dataset.tags ? li.dataset.tags.split('|') : [];
+				const visible = filter === 'Todas' || (filter === 'Faltando' ? !b.checked : tags.includes(filter));
+				li.hidden = !visible;
+			}
+			for (const section of root.querySelectorAll<HTMLElement>('[data-group]')) {
+				section.hidden = !section.querySelector('li:not([hidden])');
+			}
+		};
+		const update = () => {
+			count.textContent = String(boxes.filter((b) => b.checked).length);
+		};
+
+		const saved = new Set(load());
+		for (const b of boxes) {
+			b.checked = saved.has(b.value);
+			b.addEventListener('change', () => {
+				save();
+				update();
+			});
+		}
+		for (const radio of root.querySelectorAll<HTMLInputElement>('.cl-filters input')) {
+			radio.addEventListener('change', () => {
+				filter = radio.value;
+				applyFilter();
+			});
+		}
+		root.querySelector('[data-reset]')?.addEventListener('click', () => {
+			if (!confirm('Apagar todas as marcações desta lista?')) return;
+			for (const b of boxes) b.checked = false;
+			save();
+			update();
+			applyFilter();
+		});
+		update();
+		applyFilter();
+	}
+</script>
+
+<style>
+	.cl-progress {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem;
+	}
+	.cl-reset {
+		font: inherit;
+		font-size: var(--sl-text-sm);
+		padding: 0.25rem 0.75rem;
+		border: 1px solid var(--sl-color-gray-4);
+		border-radius: 0.5rem;
+		background: transparent;
+		color: var(--sl-color-white);
+		cursor: pointer;
+	}
+	.cl-filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.5rem;
+		padding: 0.5rem 0.75rem;
+	}
+	.cl-filters legend {
+		font-weight: 600;
+		padding: 0 0.25rem;
+	}
+	.cl-filters label {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		cursor: pointer;
+	}
+	.cl-list {
+		list-style: none;
+		padding-inline-start: 0;
+	}
+	.cl-list li + li {
+		margin-top: 0.5rem;
+	}
+	.cl-list label {
+		display: flex;
+		gap: 0.75rem;
+		align-items: flex-start;
+		cursor: pointer;
+	}
+	.cl-list input {
+		margin-top: 0.3rem;
+		width: 1.1rem;
+		height: 1.1rem;
+		flex-shrink: 0;
+		accent-color: var(--sl-color-accent);
+	}
+	.cl-list input:checked + span {
+		color: var(--sl-color-gray-2);
+		text-decoration: line-through;
+	}
+	.cl-tag {
+		display: inline-block;
+		margin-inline-start: 0.4rem;
+		padding: 0 0.4rem;
+		border: 1px solid var(--sl-color-gray-4);
+		border-radius: 999px;
+		font-size: var(--sl-text-xs);
+		font-weight: 600;
+		text-decoration: none;
+	}
+	.cl-reset:focus-visible,
+	.cl-filters input:focus-visible,
+	.cl-list input:focus-visible {
+		outline: 2px solid var(--sl-color-accent-high);
+		outline-offset: 2px;
+	}
+</style>

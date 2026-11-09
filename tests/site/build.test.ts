@@ -74,6 +74,8 @@ describe('Site gerado', () => {
 		expect(songsHtml.match(/<tr id="/g)).toHaveLength(12);
 		const hpHtml = read(BASE + 'zelda-ocarina-of-time/pecas-de-coracao/');
 		expect(hpHtml.match(/<input type="checkbox"/g)).toHaveLength(36);
+		const gsHtml = read(BASE + 'zelda-ocarina-of-time/skulltulas-douradas/');
+		expect(gsHtml.match(/<input type="checkbox"/g)).toHaveLength(100);
 	});
 
 	it('continua leve: cada página HTML fica abaixo de 150 KB', () => {

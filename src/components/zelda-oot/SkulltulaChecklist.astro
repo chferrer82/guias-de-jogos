@@ -1,0 +1,29 @@
+---
+import Checklist from '../Checklist.astro';
+import { goldSkulltulas } from '../../data/zelda-oot/skulltulas';
+
+// "ambas" recebe as duas etiquetas para aparecer nos filtros de criança e de adulto.
+const ageTags = { criança: ['Criança'], adulto: ['Adulto'], ambas: ['Criança', 'Adulto'] } as const;
+
+const regions = [...new Set(goldSkulltulas.map((s) => s.region))];
+const groups = regions.map((region) => {
+	const items = goldSkulltulas.filter((s) => s.region === region);
+	return {
+		title: `${region} (${items.length})`,
+		items: items.map((s) => ({
+			id: s.id,
+			title: s.needs.length ? `Precisa de: ${s.needs.join(', ')}` : 'Sem item especial',
+			body: s.where,
+			tags: [...ageTags[s.age], ...(s.night ? ['Noite'] : [])],
+		})),
+	};
+});
+---
+
+<Checklist
+	storageKey="zelda-oot:gold-skulltulas"
+	idPrefix="skulltula"
+	unit="Skulltulas"
+	groups={groups}
+	filters={['Criança', 'Adulto', 'Noite']}
+/>

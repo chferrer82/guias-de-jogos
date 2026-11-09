@@ -1,4 +1,5 @@
 ---
+import Checklist from '../Checklist.astro';
 import { heartPieces } from '../../data/zelda-oot/collectibles';
 
 const ages = [
@@ -6,128 +7,13 @@ const ages = [
 	{ key: 'ambas', title: 'Criança ou adulto' },
 	{ key: 'adulto', title: 'Quando adulto' },
 ] as const;
+
+const groups = ages.map((age) => ({
+	title: age.title,
+	items: heartPieces
+		.filter((p) => p.age === age.key)
+		.map((p) => ({ id: p.id, title: p.region, body: p.how })),
+}));
 ---
 
-<div class="hp-tracker" data-storage-key="zelda-oot:heart-pieces">
-	<p class="hp-progress">
-		<span role="status" id="hp-status"><strong data-count>0</strong> de {heartPieces.length} Peças marcadas</span>
-		<button type="button" class="hp-reset" data-reset aria-describedby="hp-status">Limpar marcações</button>
-	</p>
-
-	{
-		ages.map((group) => (
-			<section>
-				<h2>{group.title}</h2>
-				<ul class="hp-list">
-					{heartPieces
-						.filter((p) => p.age === group.key)
-						.map((p) => (
-							<li id={`peca-${p.id}`}>
-								<label>
-									<input type="checkbox" value={p.id} />
-									<span>
-										<strong>
-											#{p.id} · {p.region}
-										</strong>
-										<br />
-										{p.how}
-									</span>
-								</label>
-							</li>
-						))}
-				</ul>
-			</section>
-		))
-	}
-</div>
-
-<script>
-	// O progresso fica só neste navegador; se o armazenamento falhar, a lista funciona sem salvar.
-	for (const root of document.querySelectorAll<HTMLElement>('.hp-tracker')) {
-		const key = root.dataset.storageKey!;
-		const boxes = [...root.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')];
-		const count = root.querySelector<HTMLElement>('[data-count]')!;
-
-		const load = (): string[] => {
-			try {
-				const value: unknown = JSON.parse(localStorage.getItem(key) ?? '[]');
-				return Array.isArray(value) ? value.map(String) : [];
-			} catch {
-				return [];
-			}
-		};
-		const save = () => {
-			try {
-				localStorage.setItem(key, JSON.stringify(boxes.filter((b) => b.checked).map((b) => b.value)));
-			} catch {
-				// Navegação privada ou armazenamento bloqueado: segue sem salvar.
-			}
-		};
-		const update = () => {
-			count.textContent = String(boxes.filter((b) => b.checked).length);
-		};
-
-		const saved = new Set(load());
-		for (const b of boxes) {
-			b.checked = saved.has(b.value);
-			b.addEventListener('change', () => {
-				save();
-				update();
-			});
-		}
-		root.querySelector('[data-reset]')?.addEventListener('click', () => {
-			for (const b of boxes) b.checked = false;
-			save();
-			update();
-		});
-		update();
-	}
-</script>
-
-<style>
-	.hp-progress {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: 0.75rem;
-	}
-	.hp-reset {
-		font: inherit;
-		font-size: var(--sl-text-sm);
-		padding: 0.25rem 0.75rem;
-		border: 1px solid var(--sl-color-gray-4);
-		border-radius: 0.5rem;
-		background: transparent;
-		color: var(--sl-color-white);
-		cursor: pointer;
-	}
-	.hp-list {
-		list-style: none;
-		padding-inline-start: 0;
-	}
-	.hp-list li + li {
-		margin-top: 0.5rem;
-	}
-	.hp-list label {
-		display: flex;
-		gap: 0.75rem;
-		align-items: flex-start;
-		cursor: pointer;
-	}
-	.hp-list input {
-		margin-top: 0.3rem;
-		width: 1.1rem;
-		height: 1.1rem;
-		flex-shrink: 0;
-		accent-color: var(--sl-color-accent);
-	}
-	.hp-list input:checked + span {
-		color: var(--sl-color-gray-2);
-		text-decoration: line-through;
-	}
-	.hp-reset:focus-visible,
-	.hp-list input:focus-visible {
-		outline: 2px solid var(--sl-color-accent-high);
-		outline-offset: 2px;
-	}
-</style>
+<Checklist storageKey="zelda-oot:heart-pieces" idPrefix="peca" unit="Peças" groups={groups} />
