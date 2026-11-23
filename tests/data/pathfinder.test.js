@@ -36,3 +36,19 @@ describe('Pathfinder Commander Codex initial catalog', () => {
     expect(new Set(catalog.paths).size).toBe(catalog.paths.length);
   });
 });
+
+describe('Pathfinder static browser dashboard', () => {
+  const html = readFileSync(new URL('../../public/pathfinder/index.html', import.meta.url), 'utf8');
+  it('has a valid self-contained JavaScript module', () => {
+    const match = html.match(/<script type="module">([\s\S]*?)<\/script>/);
+    expect(match).not.toBeNull();
+    const source = match[1];
+    expect(source.startsWith('\\n')).toBe(false);
+    expect(() => new Function('async function check() {' + source + '\n}')).not.toThrow();
+  });
+  it('references the versioned public catalog and a visible fallback', () => {
+    expect(html).toContain('/guias-de-jogos');
+    expect(html).toContain('/pathfinder/data/catalog.json');
+    expect(html).toContain('Catálogo');
+  });
+});
