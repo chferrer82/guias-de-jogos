@@ -29,6 +29,9 @@ jobs:
         run: npm test
       - name: Build e testes do site
         run: npm run test:site
+      - run: npx playwright install --with-deps chromium
+      - name: Testes no navegador
+        run: npm run test:browser
       - uses: actions/upload-pages-artifact@v3
         if: github.ref == 'refs/heads/main'
         with:
@@ -44,3 +47,14 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Validar o GitHub Pages no navegador
+        run: npm run test:browser -- --retries=2
+        env:
+          CODEX_SITE_URL: ${{ steps.deployment.outputs.page_url }}

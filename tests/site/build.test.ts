@@ -19,6 +19,7 @@ const urlOf = (file: string) => BASE + relative(DIST, file).split('\\').join('/'
 const read = (url: string) => readFileSync(join(DIST, url.slice(BASE.length), 'index.html'), 'utf8');
 
 const EXPECTED = [
+	'pathfinder/',
 	'',
 	'contribuir/',
 	'zelda-ocarina-of-time/',

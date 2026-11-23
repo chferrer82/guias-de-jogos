@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # configuração local do Claude Code
 .claude/
+
+/test-results/
+/playwright-report/

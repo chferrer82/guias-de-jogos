@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "game": "Pathfinder: Wrath of the Righteous",
   "edition": "Enhanced Edition",
   "lastReviewed": "2026-11-22",
@@ -16,14 +16,39 @@
           "title": "Explore as cavernas iniciais",
           "priority": "main",
           "hint": "Examine o ambiente e converse com os sobreviventes antes de avançar.",
-          "reason": "Estabelece recursos e primeiros companheiros."
+          "reason": "Estabelece recursos e primeiros companheiros.",
+          "generalTitle": "Explore os arredores",
+          "confidence": "community-reference",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": "https://www.neoseeker.com/pathfinder-wrath-of-the-righteous/walkthrough/Trapped_in_the_Darkness",
+          "guidance": {
+            "where": "Cavernas sob Kenabres",
+            "route": "Avance pelo caminho das cavernas a partir do ponto da queda.",
+            "action": "Ajude os sobreviventes que encontrar e procure uma saída.",
+            "prepare": "Reúna e equipe os aliados conforme entram na party."
+          }
         },
         {
           "id": "p-2",
           "title": "Revise os companheiros recrutados",
           "priority": "recommended",
           "hint": "Confira as fichas e distribua equipamentos antes das lutas seguintes.",
-          "reason": "Melhora a sobrevivência no começo da campanha."
+          "reason": "Melhora a sobrevivência no começo da campanha.",
+          "generalTitle": "Revise o grupo",
+          "confidence": "community-reference",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": "https://www.neoseeker.com/pathfinder-wrath-of-the-righteous/walkthrough/Trapped_in_the_Darkness",
+          "guidance": {
+            "where": "Cavernas sob Kenabres",
+            "route": "Permaneça na área das cavernas com os aliados que encontrou.",
+            "action": "Confira os integrantes na interface da party.",
+            "prepare": "Distribua equipamentos e confira os recursos antes de lutar.",
+            "requires": [
+              "p-1"
+            ]
+          }
         }
       ]
     },
@@ -38,28 +63,68 @@
           "title": "Explore Market Square",
           "priority": "recommended",
           "hint": "Procure rotas e personagens relevantes para a investigação.",
-          "reason": "Área importante para progredir e reunir recursos."
+          "reason": "Área importante para progredir e reunir recursos.",
+          "generalTitle": "Explore uma área da cidade",
+          "confidence": "community-reference",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": "https://www.neoseeker.com/pathfinder-wrath-of-the-righteous/walkthrough/The_Wardstone_Legacy",
+          "guidance": {
+            "where": "Market Square",
+            "route": "Consulte o mapa de Kenabres após falar com Anevia em Defender’s Heart.",
+            "action": "Explore a praça seguindo as indicações do diário.",
+            "prepare": "Confira PV e recursos antes de sair da taverna."
+          }
         },
         {
           "id": "a1-2",
           "title": "Visite Blackwing Library",
           "priority": "missable",
           "hint": "Priorize a visita antes de avançar muitos descansos/tempo e dos eventos de Defender's Heart.",
-          "reason": "Algumas interações podem mudar após o ataque."
+          "reason": "Algumas interações podem mudar após o ataque.",
+          "generalTitle": "Verifique uma oportunidade temporária",
+          "confidence": "community-reference",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": "https://www.neoseeker.com/pathfinder-wrath-of-the-righteous/walkthrough/The_Burning_City",
+          "guidance": {
+            "where": "Blackwing Library",
+            "route": "Fale com Staunton Vhane em Defender’s Heart para identificar a biblioteca no mapa.",
+            "action": "Procure o Storyteller e verifique a situação dos cruzados.",
+            "prepare": "Confira no diário se o ataque a Defender’s Heart já ocorreu.",
+            "event": "defense",
+            "when": "before"
+          }
         },
         {
           "id": "a1-3",
           "title": "Prepare-se para Defender's Heart",
           "priority": "recommended",
           "hint": "Gerencie descansos, consumíveis e efeitos de proteção.",
-          "reason": "A sequência de eventos pode ser sensível ao tempo."
+          "reason": "A sequência de eventos pode ser sensível ao tempo.",
+          "generalTitle": "Prepare a defesa",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         },
         {
           "id": "a1-4",
           "title": "Confira missões pendentes antes de Gray Garrison",
           "priority": "missable",
           "hint": "Revise diário e objetivos secundários antes de concluir a etapa principal.",
-          "reason": "É um ponto importante de progressão."
+          "reason": "É um ponto importante de progressão.",
+          "generalTitle": "Revise pendências antes de avançar",
+          "confidence": "community-reference",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": "https://www.neoseeker.com/pathfinder-wrath-of-the-righteous/walkthrough/The_Wardstone_Legacy",
+          "guidance": {
+            "where": "Defender’s Heart",
+            "route": "Volte à taverna pelo mapa de Kenabres.",
+            "action": "Revise o diário antes de combinar o assalto à Gray Garrison com Irabeth.",
+            "prepare": "Confira os aliados reunidos e finalize as tarefas que ainda deseja fazer."
+          }
         }
       ]
     },
@@ -74,21 +139,36 @@
           "title": "Organize o grupo antes de viajar",
           "priority": "recommended",
           "hint": "Planeje descansos, consumíveis e função de cada personagem.",
-          "reason": "Longas sequências de encontros exigem preparação."
+          "reason": "Longas sequências de encontros exigem preparação.",
+          "generalTitle": "Organize o grupo",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         },
         {
           "id": "a2-2",
           "title": "Acompanhe o avanço da Cruzada",
           "priority": "main",
           "hint": "Verifique caminhos do mapa global e obstáculos militares.",
-          "reason": "O progresso militar e a exploração estão conectados."
+          "reason": "O progresso militar e a exploração estão conectados.",
+          "generalTitle": "Revise o avanço estratégico",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         },
         {
           "id": "a2-3",
           "title": "Revise tarefas antes do assalto a Drezen",
           "priority": "missable",
           "hint": "Conclua objetivos que deseja resolver antes do encerramento do ato.",
-          "reason": "A transição de ato muda o contexto de algumas missões."
+          "reason": "A transição de ato muda o contexto de algumas missões.",
+          "generalTitle": "Confira as tarefas do capítulo",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         }
       ]
     },
@@ -103,21 +183,36 @@
           "title": "Gerencie a Cruzada e seus exércitos",
           "priority": "main",
           "hint": "Confira generais, exércitos, fortes e decretos.",
-          "reason": "A gestão estratégica influencia suas opções."
+          "reason": "A gestão estratégica influencia suas opções.",
+          "generalTitle": "Revise as forças aliadas",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         },
         {
           "id": "a3-2",
           "title": "Cheque missões de companheiros",
           "priority": "recommended",
           "hint": "Revise o diário antes de viagens longas.",
-          "reason": "Histórias pessoais têm janelas de progresso."
+          "reason": "Histórias pessoais têm janelas de progresso.",
+          "generalTitle": "Confira missões pessoais",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         },
         {
           "id": "a3-3",
           "title": "Revise pendências antes da grande transição",
           "priority": "missable",
           "hint": "Verifique o diário e prioridades antes de encerrar o ato.",
-          "reason": "Alguns conteúdos são específicos desta fase."
+          "reason": "Alguns conteúdos são específicos desta fase.",
+          "generalTitle": "Revise pendências antes de avançar",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         }
       ]
     },
@@ -132,21 +227,36 @@
           "title": "Reexamine acessos e mudanças do cenário",
           "priority": "main",
           "hint": "Quando a passagem não parecer acessível, observe a orientação e movimentação do ambiente.",
-          "reason": "A navegação deste ato pode ser pouco intuitiva."
+          "reason": "A navegação deste ato pode ser pouco intuitiva.",
+          "generalTitle": "Observe o cenário",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         },
         {
           "id": "a4-2",
           "title": "Registre objetivos e contatos",
           "priority": "recommended",
           "hint": "Anote personagens e subáreas citados no diário.",
-          "reason": "Reduz idas e vindas desnecessárias."
+          "reason": "Reduz idas e vindas desnecessárias.",
+          "generalTitle": "Organize objetivos e contatos",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         },
         {
           "id": "a4-3",
           "title": "Revise pendências antes de sair",
           "priority": "missable",
           "hint": "Faça uma revisão das tarefas secundárias.",
-          "reason": "Nem todos os lugares permanecem acessíveis depois."
+          "reason": "Nem todos os lugares permanecem acessíveis depois.",
+          "generalTitle": "Confira as tarefas do capítulo",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         }
       ]
     },
@@ -161,21 +271,36 @@
           "title": "Revise Caminho Mítico e missões pessoais",
           "priority": "recommended",
           "hint": "Confira objetivos associados às escolhas míticas e aos companheiros.",
-          "reason": "Decisões acumuladas podem alterar opções."
+          "reason": "Decisões acumuladas podem alterar opções.",
+          "generalTitle": "Revise objetivos pessoais",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         },
         {
           "id": "a5-2",
           "title": "Complete objetivos opcionais prioritários",
           "priority": "recommended",
           "hint": "Faça uma última varredura no diário.",
-          "reason": "Algumas oportunidades deixam de existir no final."
+          "reason": "Algumas oportunidades deixam de existir no final.",
+          "generalTitle": "Finalize pendências opcionais",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         },
         {
           "id": "a5-3",
           "title": "Prepare-se para Threshold",
           "priority": "missable",
           "hint": "Salve e revise equipamentos e objetivos antes de entrar.",
-          "reason": "É a aproximação da conclusão da campanha."
+          "reason": "É a aproximação da conclusão da campanha.",
+          "generalTitle": "Prepare-se para a próxima etapa",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         }
       ]
     },
@@ -190,14 +315,24 @@
           "title": "Faça a preparação final da party",
           "priority": "main",
           "hint": "Reveja proteções, resistência e consumíveis.",
-          "reason": "Os encontros finais exigem consistência."
+          "reason": "Os encontros finais exigem consistência.",
+          "generalTitle": "Prepare o grupo",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         },
         {
           "id": "a6-2",
           "title": "Conclua a campanha",
           "priority": "main",
           "hint": "Siga os objetivos finais do diário.",
-          "reason": "Desfecho."
+          "reason": "Desfecho.",
+          "generalTitle": "Siga o objetivo do diário",
+          "confidence": "unverified",
+          "gameVersion": null,
+          "verifiedAt": null,
+          "source": null
         }
       ]
     }
