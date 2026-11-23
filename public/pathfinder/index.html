@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#101923" />
+  <meta name="description" content="Commander’s Codex: painel de progresso, builds, party e orientação para Pathfinder: Wrath of the Righteous." />
+  <title>Commander’s Codex — Pathfinder WotR</title>
+  <style>
+    :root{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:#e9e7db;background:#0c131b;line-height:1.5;color-scheme:dark}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% -15%,#263b43 0%,#101923 42%,#0b1219 85%);min-height:100vh}
+    button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+    a{color:#e5be79}.shell{max-width:1380px;margin:auto;padding:26px 22px 60px}
+    .masthead{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid #39454c;padding-bottom:20px;flex-wrap:wrap}
+    .eyebrow{color:#d1aa6a;text-transform:uppercase;font-size:.71rem;font-weight:700;letter-spacing:.19em}
+    h1,h2,h3{font-family:Georgia,serif;margin:0;font-weight:500}h1{font-size:clamp(1.7rem,4vw,2.7rem);letter-spacing:.02em}h2{font-size:1.6rem}h3{font-size:1.14rem}
+    .muted{color:#a9b6b8}.small{font-size:.82rem}.badge{border:1px solid #5d6b6b;border-radius:20px;padding:4px 10px;font-size:.72rem;color:#d5c8a8;white-space:nowrap}
+    .tag{display:inline-flex;padding:4px 8px;border-radius:6px;background:#273742;color:#c9dfdb;font-size:.74rem;margin:2px}
+    .layout{display:grid;grid-template-columns:218px minmax(0,1fr);gap:24px;margin-top:24px}
+    .sidebar,.panel{background:#17222b;border:1px solid #33414a;border-radius:12px;box-shadow:0 12px 30px #0002}
+    .sidebar{padding:18px;align-self:start;position:sticky;top:16px}.sidebar button{display:block;width:100%;border:0;background:none;color:#b7c2c0;padding:12px;text-align:left;border-radius:8px;margin:3px 0}
+    .sidebar button.active,.sidebar button:hover{background:#2c403f;color:#f5d69c}.sidebar .side-note{border-top:1px solid #3a454b;margin-top:18px;padding-top:14px;font-size:.78rem;color:#a7b8b8}
+    .panel{padding:22px;margin-bottom:18px}.hero{padding:30px;background:linear-gradient(110deg,#1c2c35,#1c292b 60%,#413329);border-color:#61513a}
+    .hero p{max-width:720px}.hero h2{font-size:clamp(1.6rem,3vw,2.3rem)}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .stat{background:#22303a;border:1px solid #3b484b;padding:15px;border-radius:9px}.stat strong{display:block;font:1.5rem Georgia,serif;color:#efc887}
+    label{display:block;color:#d4d6ce;font-size:.84rem;margin:0 0 6px}
+    input,select,textarea{width:100%;padding:10px 12px;background:#0e1a23;color:#f0eee5;border:1px solid #47565b;border-radius:8px;min-width:0}
+    textarea{min-height:85px;resize:vertical}input:focus,select:focus,textarea:focus{outline:2px solid #caa568;outline-offset:1px}
+    .field{margin-bottom:15px}.btn{border:1px solid #b79055;background:#b99258;color:#101820;border-radius:8px;padding:10px 14px;font-weight:700}
+    .btn.secondary{color:#eacb92;background:#24323a;border-color:#74654b}.btn.ghost{background:transparent;border-color:#485a5f;color:#cbd7d1}
+    .btn:hover{filter:brightness(1.14)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.tabs button{background:#22313b;color:#d6dfd9;border:1px solid #43565b;border-radius:8px;padding:8px 12px}.tabs button.selected{background:#665032;border-color:#c8a569;color:#fff0d4}
+    .checkpoint{padding:14px 0;border-bottom:1px solid #35444a;display:flex;gap:12px;align-items:flex-start}.checkpoint:last-child{border:0}
+    .checkpoint input{width:19px;height:19px;margin-top:3px;accent-color:#d7af70;flex-shrink:0}
+    .checkpoint .meta{font-size:.77rem;color:#c4b18a}.checkpoint p{margin:5px 0;color:#b1bdba}
+    .member{display:grid;grid-template-columns:1.4fr .6fr 1.2fr auto;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #344148}
+    .member .checks{display:flex;flex-wrap:wrap;gap:4px}.member .checks label{display:flex;align-items:center;gap:4px;font-size:.73rem;margin:0;background:#26353d;border-radius:6px;padding:5px}
+    .member .checks input{width:auto;accent-color:#d9b170}
+    .notice{border-left:3px solid #d8ab69;background:#2c2f2e;padding:14px 16px;border-radius:3px;margin:16px 0}
+    .score{font:2.4rem Georgia,serif;color:#e6c17d}.bar{height:10px;background:#344149;border-radius:10px;overflow:hidden}.bar>span{height:100%;display:block;background:#6aa59b}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:12px}.list-card{border:1px solid #3c4b50;background:#202e38;border-radius:9px;padding:16px;margin:10px 0}
+    .list-card p{margin:7px 0}.hidden{display:none!important}.status{min-height:20px;color:#c6d6c9;font-size:.83rem;margin-top:10px}
+    .foot{margin-top:25px;color:#a2b3b4;font-size:.8rem}.foot a{margin-right:12px}
+    @media(max-width:950px){.layout{grid-template-columns:1fr}.sidebar{position:static;display:flex;overflow-x:auto;gap:4px;align-items:center}.sidebar button{width:auto;white-space:nowrap}.sidebar .side-note{display:none}.grid{grid-template-columns:repeat(2,1fr)}.member{grid-template-columns:1fr 90px}.member .checks{grid-column:1/-1}.member .remove{grid-column:2;grid-row:1}}
+    @media(max-width:580px){.shell{padding:15px 12px}.panel{padding:16px}.grid,.grid.two{grid-template-columns:1fr}.member{grid-template-columns:1fr 75px}.hero{padding:22px}.sidebar{padding:8px}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="masthead">
+      <div><div class="eyebrow">Pathfinder · Wrath of the Righteous</div><h1>COMMANDER’S CODEX</h1><div class="muted small">Guia de campanha, planejamento de party e catálogo de builds — versão inicial</div></div>
+      <span class="badge">Local-first · Dados JSON versionados</span>
+    </header>
+    <div class="layout">
+      <nav class="sidebar" aria-label="Módulos">
+        <button data-view="home" class="active">⌂ Visão geral</button>
+        <button data-view="guide">◇ Guia por ato</button>
+        <button data-view="lost">➤ Estou perdido</button>
+        <button data-view="party">♜ Minha party</button>
+        <button data-view="builds">⚔ Builds</button>
+        <button data-view="data">⚙ Dados e backup</button>
+        <div class="side-note">O progresso é armazenado <strong>somente neste navegador</strong>. Para outro dispositivo, use exportar/importar.</div>
+      </nav>
+      <main id="content" aria-live="polite"><div class="panel"><h2>Pathfinder: Wrath of the Righteous</h2><p>Carregando os módulos da campanha…</p><p><a href="/guias-de-jogos/pathfinder/data/catalog.json">Consultar catálogo de atos, companheiros e builds (JSON)</a></p><p>Se esta mensagem persistir, verifique se o JavaScript está habilitado e se o deploy do GitHub Pages foi concluído.</p></div></main>
+    </div>
+    <footer class="foot">Projeto independente de fãs · Não afiliado à Owlcat Games · Dados iniciais sujeitos à revisão · <a href="../">Voltar aos guias</a><a href="https://github.com/chferrer82/guias-de-jogos">Código-fonte no GitHub</a></footer>
+  </div>
+  <script type="module">\n    const base = "/guias-de-jogos";
+    const DATA_URL = base + '/pathfinder/data/catalog.json';
+    const STORAGE = 'commanders-codex-v1';
+    const safe = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    const empty = () => ({version:1,chapter:'prologue',difficulty:'Core',mythic:'Não decidido',character:'Comandante',level:1,done:[],party:[]});
+    let catalog, state, currentView='home';
+    const main=document.getElementById('content');
+    const setState=(change)=>{state={...state,...change};localStorage.setItem(STORAGE,JSON.stringify(state));render()};
+    const chapter=()=>catalog.chapters.find(x=>x.id===state.chapter)||catalog.chapters[0];
+    const remaining=()=>chapter().checkpoints.filter(x=>!state.done.includes(x.id));
+    const priority=(arr)=>[...arr].sort((a,b)=>({missable:0,main:1,recommended:2}[a.priority]??3)-({missable:0,main:1,recommended:2}[b.priority]??3));
+    const next=()=>priority(remaining())[0];
+    const option=(value,selected)=>'<option value="'+safe(value)+'" '+(value===selected?'selected':'')+'>'+safe(value)+'</option>';
+    const title=(name,desc)=>'<div class="panel"><h2>'+name+'</h2><p class="muted">'+desc+'</p></div>';
+    const badge=(p)=>'<span class="tag">'+({missable:'Atenção: perdível ou sensível ao tempo',main:'História principal',recommended:'Recomendado'}[p]||safe(p))+'</span>';
+    function updateView(name){currentView=name;document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));render();window.scrollTo({top:0,behavior:'smooth'})}
+    function home(){const c=chapter(),n=next(),finished=c.checkpoints.filter(x=>state.done.includes(x.id)).length;
+      return '<section class="panel hero"><div class="eyebrow">Painel do comandante</div><h2>'+safe(c.title)+' — '+safe(c.subtitle)+'</h2><p>'+safe(c.objective)+'</p><div class="actions"><button class="btn" data-go="lost">Para onde vou agora?</button><button class="btn secondary" data-go="guide">Abrir meu walkthrough</button></div></section>'+
+      '<section class="grid"><div class="stat">Nível do comandante<strong>'+safe(state.level)+'</strong></div><div class="stat">Grupo cadastrado<strong>'+state.party.length+'/6</strong></div><div class="stat">Objetivos do ato<strong>'+finished+'/'+c.checkpoints.length+'</strong></div></section>'+
+      '<section class="panel" style="margin-top:18px"><h3>Próxima prioridade</h3>'+(n?'<div class="notice"><strong>'+safe(n.title)+'</strong><p>'+safe(n.hint)+'</p>'+badge(n.priority)+'</div>':'<p>Todos os checkpoints cadastrados deste ato estão marcados. Verifique o diário antes de mudar para o próximo.</p>')+
+      '<h3 style="margin-top:24px">Configuração da campanha</h3>'+profileFields()+'</section>';
+    }
+    function profileFields(){return '<div class="grid" style="margin-top:15px"><div class="field"><label for="chapter">Ato atual</label><select id="chapter" data-profile="chapter">'+catalog.chapters.map(c=>option(c.id,state.chapter).replace('>'+safe(c.id)+'</option>','>'+safe(c.title)+'</option>')).join('')+'</select></div>'+
+      '<div class="field"><label for="difficulty">Dificuldade</label><select id="difficulty" data-profile="difficulty">'+['Story','Casual','Normal','Daring','Core','Hard','Unfair','Personalizada'].map(x=>option(x,state.difficulty)).join('')+'</select></div>'+
+      '<div class="field"><label for="mythic">Caminho Mítico</label><select id="mythic" data-profile="mythic">'+catalog.paths.map(x=>option(x,state.mythic)).join('')+'</select></div>'+
+      '<div class="field"><label for="character">Nome do comandante</label><input id="character" data-profile-text="character" maxlength="70" value="'+safe(state.character)+'"></div>'+
+      '<div class="field"><label for="level">Nível do comandante (1–20)</label><input type="number" min="1" max="20" id="level" data-profile="level" value="'+safe(state.level)+'"></div></div>';}
+    function guide(){const c=chapter();return title('Walkthrough por ato','Checkpoints verificáveis pelo jogador. Esta é uma estrutura inicial de navegação, não um detonado completo.')+'<section class="panel">'+profileFields()+'<h3>Objetivos — '+safe(c.subtitle)+'</h3>'+
+      c.checkpoints.map(p=>'<label class="checkpoint"><input type="checkbox" data-done="'+safe(p.id)+'" '+(state.done.includes(p.id)?'checked':'')+'><span><strong>'+safe(p.title)+'</strong> '+badge(p.priority)+'<p>'+safe(p.hint)+'</p><span class="meta">Por quê: '+safe(p.reason)+'</span></span></label>').join('')+'</section>';}
+    function lost(){const c=chapter(),n=next();return title('Estou perdido','Orientação a partir do seu ato e dos checkpoints registrados. O sistema não lê seu jogo automaticamente.')+
+      '<section class="panel"><div class="eyebrow">Sua situação atual</div><h3>'+safe(c.title)+': '+safe(c.subtitle)+'</h3><p>'+safe(c.objective)+'</p>'+
+      (n?'<div class="notice"><div class="eyebrow">Próxima ação sugerida</div><h3 style="margin-top:8px">'+safe(n.title)+'</h3><p>'+safe(n.hint)+'</p>'+badge(n.priority)+'<p class="small muted">Justificativa: '+safe(n.reason)+'</p></div><button class="btn" data-complete="'+safe(n.id)+'">Marcar concluído e atualizar direção</button>':'<div class="notice">Nenhum checkpoint restante no catálogo deste ato. Consulte seu diário no jogo antes de avançar.</div>')+
+      '<hr style="border:0;border-top:1px solid #34444b;margin:25px 0"><label for="situation">O que aconteceu? (opcional)</label><textarea id="situation" placeholder="Descreva onde está, missão ativa e bloqueio..."></textarea><div class="actions"><button class="btn secondary" id="copy-context">Copiar resumo para pedir ajuda</button><button class="btn ghost" data-go="guide">Revisar checkpoints</button></div><p class="small muted">A análise livre por IA ainda não está conectada. O botão prepara o contexto para consulta externa, sem enviar seus dados.</p><p id="copy-status" class="status"></p></section>';}
+    function assess(){const members=state.party;const covers={};for(const m of members){for(const r of m.roles||[])covers[r]=(covers[r]||0)+1}
+      const requirements=['frontline','physical','arcane','divine','control','support','skills','ranged'];
+      const filled=requirements.filter(r=>covers[r]);const score=Math.round(filled.length/requirements.length*100);
+      return {covers,requirements,filled,score,missing:requirements.filter(r=>!covers[r])};
+    }
+    function party(){const a=assess();return title('Minha party','Cadastre até seis integrantes. A nota abaixo mede cobertura de funções declaradas, não poder real de combate.')+
+      '<section class="panel"><div class="row"><div><div class="eyebrow">Cobertura de funções</div><div class="score">'+a.score+'/100</div></div><span class="badge">'+state.party.length+' / 6 integrantes</span></div><div class="bar"><span style="width:'+a.score+'%"></span></div><p class="small muted">'+a.filled.length+' de '+a.requirements.length+' categorias cobertas. Não considera equipamentos, magias, talentos, buffs, sobreposição nem valores matemáticos.</p>'+
+      (a.missing.length?'<div class="notice"><strong>Funções não declaradas:</strong><p>'+a.missing.map(r=>safe(catalog.roles.find(x=>x.id===r)?.name||r)).join(', ')+'</p></div>':'<div class="notice">Todas as categorias declaradas estão cobertas. Isso não significa uma party perfeita.</div>')+
+      '<h3>Integrantes</h3>'+state.party.map((m,i)=>'<div class="member"><select aria-label="Companheiro '+(i+1)+'" data-member="'+i+'">'+catalog.companions.map(x=>option(x,m.name)).join('')+'</select><input aria-label="Nível de '+safe(m.name)+'" type="number" min="1" max="20" data-member-level="'+i+'" value="'+safe(m.level)+'"><button class="btn ghost remove" data-remove="'+i+'">Excluir</button><div class="checks">'+catalog.roles.map(r=>'<label><input type="checkbox" data-role="'+i+':'+r.id+'" '+((m.roles||[]).includes(r.id)?'checked':'')+'>'+safe(r.name)+'</label>').join('')+'</div></div>').join('')+
+      '<div class="actions"><button class="btn" id="add-member" '+(state.party.length>=6?'disabled':'')+'>Adicionar integrante</button><button class="btn secondary" id="copy-party">Copiar relatório</button></div><p class="small muted">Selecione manualmente as funções que a build efetivamente desempenha; marcar todas artificialmente não aumenta o poder do grupo.</p><p id="party-status" class="status"></p></section>';}
+    function builds(){return title('Catálogo de builds','Referências para pesquisa e validação. Não são builds nível a nível nem rankings de eficiência comprovados.')+'<section class="panel"><div class="field"><label for="filter-build">Buscar por classe ou caminho</label><input id="filter-build" placeholder="Ex.: Angel, Lich, Oracle, suporte"></div><div id="build-results">'+buildCards('')+'</div></section>';}
+    function buildCards(q){const arr=catalog.builds.filter(b=>(b.name+' '+b.style+' '+b.path+' '+b.notes).toLowerCase().includes(q.toLowerCase()));
+      return arr.length?arr.map(b=>'<article class="list-card"><div class="row"><h3>'+safe(b.name)+'</h3><span class="badge">'+safe(b.status)+'</span></div><div><span class="tag">'+safe(b.style)+'</span><span class="tag">'+safe(b.path)+'</span></div><p>'+safe(b.notes)+'</p><span class="small muted">Papéis: '+b.tags.map(t=>safe(catalog.roles.find(r=>r.id===t)?.name||t)).join(', ')+'</span></article>').join(''):'<p>Nenhuma build inicial corresponde ao filtro.</p>';}
+    function data(){return title('Dados, backup e API futura','Base estática consultável publicamente; progresso privado ao navegador até você exportá-lo.')+
+      '<section class="panel"><h3>Catálogo JSON</h3><p>Dados independentes da interface, versionados em GitHub. Outros sistemas podem ler o arquivo via HTTP GET.</p><p><a href="'+safe(DATA_URL)+'" target="_blank" rel="noopener">Abrir catálogo JSON ↗</a></p><div class="actions"><button class="btn" id="export">Exportar meu progresso (.json)</button><button class="btn secondary" id="import">Importar progresso</button><input class="hidden" type="file" id="import-file" accept="application/json,.json"></div><p id="data-status" class="status"></p><div class="notice"><strong>Atenção:</strong> o GitHub Pages não armazena alterações pessoais no servidor. O backup exportado contém sua configuração e integrantes da party; mantenha o arquivo em local seguro.</div><h3>Próximas etapas técnicas</h3><p class="muted">Schemas públicos de builds, feats, magias, equipamentos e missões; mecanismo validado de regras; API REST com endpoints versionados; importação de saves em PC; análise assistida por IA com fontes.</p><button class="btn ghost" id="reset">Limpar progresso neste navegador</button></section>';}
+    function render(){main.innerHTML=({home,guide,lost,party,builds,data}[currentView]||home)();}
+    function download(name,txt){const url=URL.createObjectURL(new Blob([txt],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+    const validImport=x=>x&&x.version===1&&catalog.chapters.some(c=>c.id===x.chapter)&&Array.isArray(x.done)&&x.done.every(s=>typeof s==='string')&&Array.isArray(x.party)&&x.party.length<=6&&x.party.every(m=>typeof m.name==='string'&&m.name.length<=100&&Number.isInteger(m.level)&&m.level>=1&&m.level<=20&&Array.isArray(m.roles)&&m.roles.every(r=>catalog.roles.some(rr=>rr.id===r)))&&typeof x.character==='string'&&x.character.length<=100&&Number.isInteger(x.level)&&x.level>=1&&x.level<=20&&typeof x.difficulty==='string'&&typeof x.mythic==='string';
+    document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
+      if(b.dataset.view){updateView(b.dataset.view);return}
+      if(b.dataset.go){updateView(b.dataset.go);return}
+      if(b.dataset.complete){setState({done:[...new Set([...state.done,b.dataset.complete])]});return}
+      if(b.dataset.remove!==undefined){setState({party:state.party.filter((_,i)=>i!==Number(b.dataset.remove))});return}
+      if(b.id==='add-member'){if(state.party.length<6)setState({party:[...state.party,{name:'Personagem personalizado',level:state.level,roles:[]}]});return}
+      if(b.id==='copy-context'||b.id==='copy-party'){const msg=b.id==='copy-context'?'Pathfinder WotR — dificuldade '+state.difficulty+', ato '+chapter().title+', nível '+state.level+', caminho '+state.mythic+'. Objetivos concluídos: '+chapter().checkpoints.filter(p=>state.done.includes(p.id)).map(p=>p.title).join('; ')+'. Próxima prioridade do catálogo: '+(next()?.title||'nenhuma')+'. Situação relatada: '+(document.getElementById('situation')?.value||'não informada')+'. Indique próximo passo e confirme fatos antes de spoilers.':'Party WotR ('+state.difficulty+'): '+state.party.map(m=>m.name+' nível '+m.level+' ['+m.roles.join(', ')+']').join('; ')+'. Cobertura heurística '+assess().score+'/100. Avalie sinergias reais, buffs, equipamentos e builds.';try{await navigator.clipboard.writeText(msg);document.getElementById(b.id==='copy-context'?'copy-status':'party-status').textContent='Resumo copiado.'}catch{document.getElementById(b.id==='copy-context'?'copy-status':'party-status').textContent='Não foi possível copiar automaticamente.'}return}
+      if(b.id==='export'){download('commanders-codex-progresso.json',JSON.stringify(state,null,2));return}
+      if(b.id==='import'){document.getElementById('import-file').click();return}
+      if(b.id==='reset'){if(confirm('Apagar todo o progresso salvo neste navegador?')){state=empty();localStorage.setItem(STORAGE,JSON.stringify(state));render()}return}
+    });
+    document.addEventListener('input',e=>{if(e.target.id==='filter-build'){document.getElementById('build-results').innerHTML=buildCards(e.target.value)}});
+    document.addEventListener('change',async e=>{const t=e.target;
+      if(t.dataset.profile){const val=t.dataset.profile==='level'?Math.max(1,Math.min(20,Number(t.value)||1)):t.value;setState({[t.dataset.profile]:val});return}
+      if(t.dataset.profileText){setState({[t.dataset.profileText]:t.value.slice(0,70)});return}
+      if(t.dataset.done){setState({done:t.checked?[...new Set([...state.done,t.dataset.done])]:state.done.filter(x=>x!==t.dataset.done)});return}
+      if(t.dataset.member!==undefined){const party=structuredClone(state.party);party[Number(t.dataset.member)].name=t.value;setState({party});return}
+      if(t.dataset.memberLevel!==undefined){const party=structuredClone(state.party);party[Number(t.dataset.memberLevel)].level=Math.max(1,Math.min(20,Number(t.value)||1));setState({party});return}
+      if(t.dataset.role){const [i,role]=t.dataset.role.split(':');const party=structuredClone(state.party),roles=new Set(party[Number(i)].roles);t.checked?roles.add(role):roles.delete(role);party[Number(i)].roles=[...roles];setState({party});return}
+      if(t.id==='import-file'){const file=t.files?.[0];if(!file)return;try{if(file.size>100000)throw Error('Arquivo muito grande');const obj=JSON.parse(await file.text());if(!validImport(obj))throw Error('Estrutura incompatível');state={...empty(),...obj,party:obj.party.map(m=>({name:m.name,level:m.level,roles:m.roles}))};localStorage.setItem(STORAGE,JSON.stringify(state));render();alert('Progresso importado.')}catch(err){document.getElementById('data-status').textContent='Importação recusada: '+err.message}return}
+    });
+    try{const response=await fetch(DATA_URL);if(!response.ok)throw Error('HTTP '+response.status);catalog=await response.json();let raw=localStorage.getItem(STORAGE);let parsed;try{parsed=raw?JSON.parse(raw):null}catch{}state=parsed&&validImport(parsed)?{...empty(),...parsed}:empty();render()}catch(err){main.innerHTML='<section class="panel"><h2>Catálogo indisponível</h2><p>Não foi possível carregar '+safe(DATA_URL)+'.</p><p class="muted">'+safe(err.message)+'</p></section>'}
+  </script>
+</body>
+</html>
