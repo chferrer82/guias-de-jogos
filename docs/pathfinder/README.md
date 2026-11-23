@@ -1,69 +1,51 @@
-# Commander’s Codex — Pathfinder: Wrath of the Righteous
+# Commander’s Codex · Pathfinder: Wrath of the Righteous
 
-**Acesso:** https://chferrer82.github.io/guias-de-jogos/pathfinder/
+[Painel no GitHub Pages](https://chferrer82.github.io/guias-de-jogos/pathfinder/)
 
-Módulo independente do portal Guias de Jogos, pensado para funcionar **primeiro sem servidor** e, futuramente, oferecer bases consultáveis por APIs como as utilizadas por ferramentas de regras de RPG.
+## Auditoria e decisão de arquitetura
 
-## MVP implementado
+A rota estática existia no build de `cd34a24`. O teste de links lia um trecho do módulo embutido como se fosse um elemento HTML. As cinco execuções mais recentes daquela revisão falharam, e a rota pública devolvia HTTP 404 embora o catálogo devolvesse HTTP 200. O erro de sintaxe histórico já havia sido corrigido em `c7ca714`. [Execução de CI auditada](https://github.com/chferrer82/guias-de-jogos/actions/runs/45111047907)
 
-- Painel de campanha com ato atual, nível, dificuldade e Caminho Mítico.
-- Checkpoints por ato, com prioridade e alertas sobre oportunidades potencialmente perdíveis.
-- **Estou perdido:** recomendação determinística do próximo checkpoint não concluído, com justificativa e botão para avançar.
-- Até seis integrantes com nível e funções declaradas; cálculo transparente de cobertura de oito funções.
-- Catálogo inicial de cinco arquétipos/builds, **sem ranking supostamente preciso**.
-- Salvamento offline por `localStorage`, backup em JSON e importação com validação básica.
-- Dados do jogo em JSON independente da interface.
+O Codex permanece independente do Starlight e usa a rota única `public/pathfinder/index.html`. O Astro copia os arquivos para o artefato e mantém o prefixo `/guias-de-jogos/`. O módulo externo elimina a colisão com o teste de links. A aplicação resolve seus arquivos por caminho relativo e oferece uma página de consulta estática se o JavaScript estiver desativado.
 
-**Limites:** guia ainda não exaustivo; não lê saves, não executa IA nem simulação de talentos, equipamentos ou fórmulas de combate. Nota de party é **cobertura de funções declaradas**, não desempenho real. Não há sincronização de progresso entre dispositivos.
+## Instalação e testes
 
-## Estrutura
+Use Node.js 24.
 
-```text
-public/pathfinder/data/catalog.json   # Catálogo público JSON versionado
-src/pages/pathfinder/index.astro       # Dashboard e lógica local
-docs/pathfinder/README.md              # Documentação e roteiro
-```
-
-O endpoint **estático de dados** é:
-
-```http
-GET https://chferrer82.github.io/guias-de-jogos/pathfinder/data/catalog.json
-```
-
-Este GET devolve um JSON versionado. **Não** é um servidor de API com autenticação ou armazenamento de campanhas.
-
-## Rodar localmente
-
-```bash
-git clone https://github.com/chferrer82/guias-de-jogos.git
-cd guias-de-jogos
-npm install
+```sh
+npm ci
 npm run dev
+npm test
+npm run test:site
+npx playwright install chromium
+npm run test:browser
 ```
 
-Visite `http://localhost:4321/guias-de-jogos/pathfinder/`. Para validar o build: `npm run build`.
+Abra [o painel local](http://localhost:4321/guias-de-jogos/pathfinder/). A suíte de navegador usa o artefato de `test:site` e inicia o preview local. Defina `CHROMIUM_PATH` para usar um Chromium instalado. Para executar a suíte contra Pages, defina `CODEX_SITE_URL=https://chferrer82.github.io/guias-de-jogos/`.
 
-## Arquitetura futura (API-first)
+A CI valida dados, build, links do portal e fluxos interativos antes de enviar o artefato a Pages. Em `main`, também roda a suíte no URL publicado. As preferências usadas nos testes ficam em contextos de navegador isolados.
 
-Proposta de contratos estáveis, ainda **não implementados**:
+## Dados, serviços e progresso
 
-- `GET /api/v1/chapters` — atos e objetivos verificados.
-- `GET /api/v1/builds?mythic=Angel&difficulty=Core` — builds filtradas.
-- `GET /api/v1/classes/:id` — classes, níveis e habilidades.
-- `POST /api/v1/party/evaluate` — nota baseada em cálculos definidos e explicações.
-- `POST /api/v1/guidance` — orientação contextual a partir de estágio, diário e escolhas.
-- `GET /api/v1/rules?version=...` — regras atribuídas à edição/patch.
+| Arquivo | Responsabilidade |
+| --- | --- |
+| `public/pathfinder/data/catalog.json` | Dados públicos versionados, atos, checkpoints, papéis, caminhos e builds de referência |
+| `public/pathfinder/catalog.js` | Esquema executável do catálogo e validação de referências |
+| `public/pathfinder/guidance.js` | Elegibilidade, prioridade, exposição de spoilers e cobertura declarada da party |
+| `public/pathfinder/campaigns.js` | Criação, validação, migração e mesclagem de backups |
+| `public/pathfinder/app.js` | Interface, eventos e adaptador de armazenamento do navegador |
 
-Recomendação: usar **IDs estáveis**, campos `source`, `verifiedAt`, `gameVersion`, `confidence` por registro, JSON Schema, migração de dados, testes automatizados e separação entre informações verificadas, hipótese e cálculo. O front-end não deverá conhecer as regras internamente; usará os mesmos contratos do servidor.
+O contrato HTTP disponível é `GET /guias-de-jogos/pathfinder/data/catalog.json`. O catálogo 1.1 mantém os IDs existentes e acrescenta `generalTitle`, `confidence`, `source`, `gameVersion`, `verifiedAt` e, quando disponível, `guidance`. A orientação lista destino, rota, ação, preparação e condições. Campos de verificação desconhecidos usam `null`. Fontes comunitárias descrevem o jogo digital e têm o patch a confirmar. Checkpoints sem referência ficam disponíveis no checklist editorial.
 
-## Próximas prioridades
+A função `guideCampaign(catalog, campaign)` retorna `next`, `available` e `blocked`. Cada bloqueio identifica a etapa e a condição faltante ou encerrada. A análise da party conta funções declaradas e aponta sobreposições para revisão. Os serviços são funções locais que podem ser reutilizadas por uma futura API REST. Os modos de spoiler controlam a apresentação, enquanto o JSON público contém o catálogo integral.
 
-1. Aumentar qualidade do banco de missões por ato (com fontes e critérios de desbloqueio).
-2. Cadastro de classes, arquétipos, feats, spells, equipamentos e interações míticas.
-3. Serviço de cálculo para builds, progressão e party, com cenários Core / Hard / Unfair.
-4. Importador de saves local em PC, somente leitura, com consentimento explícito.
-5. API backend opcional com FastAPI e consultas assistidas por IA, mantendo o cliente estático utilizável sem ela.
+O backup tem `version: 2`, `activeId` e `campaigns`. Cada campanha tem ID próprio, ficha, party, ato, localização, objetivo declarado, preferências, evento temporizado e mapa de estados dos checkpoints. A migração mantém o original v1 no navegador. A importação valida o arquivo inteiro e acrescenta campanhas, gerando novos IDs quando necessário. A exportação abrange todas as campanhas. O progresso fica no `localStorage` da origem do site.
 
-## Direitos e créditos
+## Cobertura e próximos incrementos
 
-Projeto independente de fãs, sem afiliação com Owlcat Games ou Paizo. Não republicar integralmente walkthroughs ou bancos de dados de terceiros sem autorização. Use referências, paráfrases, verificação manual, fontes e licenças compatíveis.
+- **MVP:** painel, ficha do comandante, múltiplas campanhas, seis integrantes, seis estados de checkpoint, três modos de spoiler e backup. O guia tem checkpoints em todos os atos e orientação fundamentada no Prólogo e no Ato 1. A cobertura da party descreve papéis informados pelo jogador.
+- **Próxima prioridade:** verificar a versão PC, ampliar missões e condições do Ato 2 em diante, e tornar consultáveis os bloqueios por missão. Classes, magias, talentos e itens ainda precisam de catálogo validado.
+- **Otimização e estratégia:** progressão por nível, pré-requisitos, cenários por dificuldade, análise mecânica da party, combate, Cruzada, equipamentos e decisões dependem desse catálogo.
+- **Integrações:** IndexedDB é uma opção para substituir o adaptador local. Uma API futura pode oferecer `GET /api/v1/chapters` e `POST /api/v1/guidance` usando os serviços locais. Planejar leitura de saves PC com consentimento, cópia de trabalho e compatibilidade verificada. Integrações de IA devem usar fontes recuperadas, manter chaves no servidor e pedir confirmação para mudanças de progresso.
+
+Projeto de fãs independente da Owlcat Games e da Paizo.

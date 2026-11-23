@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { validateCatalog } from '../../public/pathfinder/catalog.js';
+import { newBook, newCampaign, mergeBooks, parseBook } from '../../public/pathfinder/campaigns.js';
+import { guideCampaign, visiblePoint } from '../../public/pathfinder/guidance.js';
+
 
 const catalog = JSON.parse(readFileSync(new URL('../../public/pathfinder/data/catalog.json', import.meta.url), 'utf8'));
 
@@ -37,18 +41,65 @@ describe('Pathfinder Commander Codex initial catalog', () => {
   });
 });
 
-describe('Pathfinder static browser dashboard', () => {
-  const html = readFileSync(new URL('../../public/pathfinder/index.html', import.meta.url), 'utf8');
-  it('has a valid self-contained JavaScript module', () => {
-    const match = html.match(/<script type="module">([\s\S]*?)<\/script>/);
-    expect(match).not.toBeNull();
-    const source = match[1];
-    expect(source.startsWith('\\n')).toBe(false);
-    expect(() => new Function('async function check() {' + source + '\n}')).not.toThrow();
-  });
-  it('references the versioned public catalog and a visible fallback', () => {
-    expect(html).toContain('/guias-de-jogos');
-    expect(html).toContain('/pathfinder/data/catalog.json');
-    expect(html).toContain('Catálogo');
-  });
+
+it('converte o progresso v1 sem perder checkpoints nem integrantes', () => {
+  const legacy = { version: 1, chapter: 'prologue', difficulty: 'Core', mythic: 'Angel',
+    character: 'Joana', level: 3, done: ['p-1'], party: [{ name: 'Seelah', level: 3, roles: ['frontline'] }] };
+  const book = parseBook(JSON.stringify(legacy), catalog);
+  expect(book.version).toBe(2);
+  expect(book.campaigns[0]).toMatchObject({ character: 'Joana', checkpoints: { 'p-1': 'done' }, party: legacy.party });
+  expect(parseBook(JSON.stringify(book), catalog)).toEqual(book);
+  const merged = mergeBooks(book, book);
+  expect(merged.campaigns).toHaveLength(2);
+  expect(merged.campaigns[0]).toEqual(book.campaigns[0]);
+  expect(merged.activeId).not.toBe(book.activeId);
+});
+
+it('recusa referências, estados e níveis inválidos no backup', () => {
+  for (const change of [{ checkpoints: { ficticio: 'done' } }, { checkpoints: { 'p-1': [] } },
+    { level: 21 }, { party: [null] }, { spoilers: 'unknown' }]) {
+    const book = newBook({ ...newCampaign(catalog), ...change });
+    expect(() => parseBook(JSON.stringify(book), catalog)).toThrow();
+  }
+});
+
+it('distingue dependências, oportunidade temporizada e status terminal', () => {
+  const campaign = { ...newCampaign(catalog), location: 'Cavernas sob Kenabres' };
+  expect(guideCampaign(catalog, campaign).next.id).toBe('p-1');
+  expect(guideCampaign(catalog, campaign).blocked[0].reason).toBe('prerequisite');
+  campaign.checkpoints['p-1'] = 'done';
+  expect(guideCampaign(catalog, campaign).next.id).toBe('p-2');
+  campaign.chapter = 'act1';
+  const findLibrary = () => guideCampaign(catalog, campaign).blocked.find(({ point }) => point.id === 'a1-2');
+  expect(findLibrary().reason).toBe('unknown-event');
+  campaign.defense = 'after';
+  expect(findLibrary().reason).toBe('closed-window');
+  campaign.defense = 'before';
+  expect(guideCampaign(catalog, campaign).next.id).toBe('a1-2');
+  expect(visiblePoint(guideCampaign(catalog, campaign).next, 'none').title).not.toMatch(/Blackwing/);
+  campaign.checkpoints['a1-2'] = 'skipped';
+  expect(guideCampaign(catalog, campaign).next.id).not.toBe('a1-2');
+});
+
+it('requer referência para orientação e mantém dependências locais e acíclicas', () => {
+  for (const chapter of catalog.chapters) {
+    const seen = new Set();
+    for (const point of chapter.checkpoints) {
+      expect(point.generalTitle).toBeTruthy();
+      if (point.guidance) {
+        expect(point.source).toMatch(/^https:\/\//);
+        expect(point.confidence).toBe('community-reference');
+        for (const key of ['where', 'route', 'action', 'prepare']) expect(point.guidance[key]).toBeTruthy();
+        for (const id of point.guidance.requires ?? []) expect(seen.has(id)).toBe(true);
+      } else expect(point.confidence).toBe('unverified');
+      seen.add(point.id);
+    }
+  }
+});
+
+it('valida o esquema consumido pelo cliente e recusa ciclo', () => {
+  expect(validateCatalog(catalog)).toBe(catalog);
+  const bad = structuredClone(catalog);
+  bad.chapters[0].checkpoints[0].guidance.requires = ['p-2'];
+  expect(() => validateCatalog(bad)).toThrow(/dependências/);
 });
