@@ -69,7 +69,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
     <footer class="foot">Projeto independente de fãs · Não afiliado à Owlcat Games · Dados iniciais sujeitos à revisão · <a href="../">Voltar aos guias</a><a href="https://github.com/chferrer82/guias-de-jogos">Código-fonte no GitHub</a></footer>
   </div>
-  <script define:vars={{base}}>
+  <script type="module" define:vars={{base}}>
     const DATA_URL = base + '/pathfinder/data/catalog.json';
     const STORAGE = 'commanders-codex-v1';
     const safe = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
