@@ -39,6 +39,7 @@ export default defineConfig({
 			components: { Footer: './src/components/Footer.astro' },
 			sidebar: [
 				{ label: 'Início', link: '/' },
+				{ label: 'Pathfinder WotR — Commander’s Codex', link: '/pathfinder/' },
 				{
 					label: 'Zelda: Ocarina of Time',
 					items: [
