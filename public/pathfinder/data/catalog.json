@@ -1,0 +1,334 @@
+{
+  "schemaVersion": "1.0.0",
+  "game": "Pathfinder: Wrath of the Righteous",
+  "edition": "Enhanced Edition",
+  "lastReviewed": "2026-11-22",
+  "disclaimer": "Dados iniciais de orientação; decisões, rotas e otimizações devem ser verificadas conforme versão, dificuldade e escolhas de campanha.",
+  "chapters": [
+    {
+      "id": "prologue",
+      "title": "Prólogo",
+      "subtitle": "Trapped in the Darkness",
+      "objective": "Escape das cavernas e reúna os primeiros aliados.",
+      "checkpoints": [
+        {
+          "id": "p-1",
+          "title": "Explore as cavernas iniciais",
+          "priority": "main",
+          "hint": "Examine o ambiente e converse com os sobreviventes antes de avançar.",
+          "reason": "Estabelece recursos e primeiros companheiros."
+        },
+        {
+          "id": "p-2",
+          "title": "Revise os companheiros recrutados",
+          "priority": "recommended",
+          "hint": "Confira as fichas e distribua equipamentos antes das lutas seguintes.",
+          "reason": "Melhora a sobrevivência no começo da campanha."
+        }
+      ]
+    },
+    {
+      "id": "act1",
+      "title": "Ato 1",
+      "subtitle": "The Wardstone Legacy",
+      "objective": "Investigue Kenabres e avance na missão principal.",
+      "checkpoints": [
+        {
+          "id": "a1-1",
+          "title": "Explore Market Square",
+          "priority": "recommended",
+          "hint": "Procure rotas e personagens relevantes para a investigação.",
+          "reason": "Área importante para progredir e reunir recursos."
+        },
+        {
+          "id": "a1-2",
+          "title": "Visite Blackwing Library",
+          "priority": "missable",
+          "hint": "Priorize a visita antes de avançar muitos descansos/tempo e dos eventos de Defender's Heart.",
+          "reason": "Algumas interações podem mudar após o ataque."
+        },
+        {
+          "id": "a1-3",
+          "title": "Prepare-se para Defender's Heart",
+          "priority": "recommended",
+          "hint": "Gerencie descansos, consumíveis e efeitos de proteção.",
+          "reason": "A sequência de eventos pode ser sensível ao tempo."
+        },
+        {
+          "id": "a1-4",
+          "title": "Confira missões pendentes antes de Gray Garrison",
+          "priority": "missable",
+          "hint": "Revise diário e objetivos secundários antes de concluir a etapa principal.",
+          "reason": "É um ponto importante de progressão."
+        }
+      ]
+    },
+    {
+      "id": "act2",
+      "title": "Ato 2",
+      "subtitle": "Sword of Valor",
+      "objective": "Avance com o exército da Cruzada em direção a Drezen.",
+      "checkpoints": [
+        {
+          "id": "a2-1",
+          "title": "Organize o grupo antes de viajar",
+          "priority": "recommended",
+          "hint": "Planeje descansos, consumíveis e função de cada personagem.",
+          "reason": "Longas sequências de encontros exigem preparação."
+        },
+        {
+          "id": "a2-2",
+          "title": "Acompanhe o avanço da Cruzada",
+          "priority": "main",
+          "hint": "Verifique caminhos do mapa global e obstáculos militares.",
+          "reason": "O progresso militar e a exploração estão conectados."
+        },
+        {
+          "id": "a2-3",
+          "title": "Revise tarefas antes do assalto a Drezen",
+          "priority": "missable",
+          "hint": "Conclua objetivos que deseja resolver antes do encerramento do ato.",
+          "reason": "A transição de ato muda o contexto de algumas missões."
+        }
+      ]
+    },
+    {
+      "id": "act3",
+      "title": "Ato 3",
+      "subtitle": "The Fifth Crusade",
+      "objective": "Conduza a Quinta Cruzada e investigue as ameaças pelo mapa.",
+      "checkpoints": [
+        {
+          "id": "a3-1",
+          "title": "Gerencie a Cruzada e seus exércitos",
+          "priority": "main",
+          "hint": "Confira generais, exércitos, fortes e decretos.",
+          "reason": "A gestão estratégica influencia suas opções."
+        },
+        {
+          "id": "a3-2",
+          "title": "Cheque missões de companheiros",
+          "priority": "recommended",
+          "hint": "Revise o diário antes de viagens longas.",
+          "reason": "Histórias pessoais têm janelas de progresso."
+        },
+        {
+          "id": "a3-3",
+          "title": "Revise pendências antes da grande transição",
+          "priority": "missable",
+          "hint": "Verifique o diário e prioridades antes de encerrar o ato.",
+          "reason": "Alguns conteúdos são específicos desta fase."
+        }
+      ]
+    },
+    {
+      "id": "act4",
+      "title": "Ato 4",
+      "subtitle": "The Midnight Isles",
+      "objective": "Progrida em uma região com regras próprias de navegação.",
+      "checkpoints": [
+        {
+          "id": "a4-1",
+          "title": "Reexamine acessos e mudanças do cenário",
+          "priority": "main",
+          "hint": "Quando a passagem não parecer acessível, observe a orientação e movimentação do ambiente.",
+          "reason": "A navegação deste ato pode ser pouco intuitiva."
+        },
+        {
+          "id": "a4-2",
+          "title": "Registre objetivos e contatos",
+          "priority": "recommended",
+          "hint": "Anote personagens e subáreas citados no diário.",
+          "reason": "Reduz idas e vindas desnecessárias."
+        },
+        {
+          "id": "a4-3",
+          "title": "Revise pendências antes de sair",
+          "priority": "missable",
+          "hint": "Faça uma revisão das tarefas secundárias.",
+          "reason": "Nem todos os lugares permanecem acessíveis depois."
+        }
+      ]
+    },
+    {
+      "id": "act5",
+      "title": "Ato 5",
+      "subtitle": "City of Locusts",
+      "objective": "Conclua tramas pendentes e prepare o desfecho.",
+      "checkpoints": [
+        {
+          "id": "a5-1",
+          "title": "Revise Caminho Mítico e missões pessoais",
+          "priority": "recommended",
+          "hint": "Confira objetivos associados às escolhas míticas e aos companheiros.",
+          "reason": "Decisões acumuladas podem alterar opções."
+        },
+        {
+          "id": "a5-2",
+          "title": "Complete objetivos opcionais prioritários",
+          "priority": "recommended",
+          "hint": "Faça uma última varredura no diário.",
+          "reason": "Algumas oportunidades deixam de existir no final."
+        },
+        {
+          "id": "a5-3",
+          "title": "Prepare-se para Threshold",
+          "priority": "missable",
+          "hint": "Salve e revise equipamentos e objetivos antes de entrar.",
+          "reason": "É a aproximação da conclusão da campanha."
+        }
+      ]
+    },
+    {
+      "id": "act6",
+      "title": "Ato 6",
+      "subtitle": "Threshold of the End",
+      "objective": "Enfrente os desafios finais.",
+      "checkpoints": [
+        {
+          "id": "a6-1",
+          "title": "Faça a preparação final da party",
+          "priority": "main",
+          "hint": "Reveja proteções, resistência e consumíveis.",
+          "reason": "Os encontros finais exigem consistência."
+        },
+        {
+          "id": "a6-2",
+          "title": "Conclua a campanha",
+          "priority": "main",
+          "hint": "Siga os objetivos finais do diário.",
+          "reason": "Desfecho."
+        }
+      ]
+    }
+  ],
+  "paths": [
+    "Não decidido",
+    "Angel",
+    "Demon",
+    "Lich",
+    "Azata",
+    "Aeon",
+    "Trickster",
+    "Legend",
+    "Gold Dragon",
+    "Devil",
+    "Swarm-That-Walks"
+  ],
+  "roles": [
+    {
+      "id": "frontline",
+      "name": "Linha de frente"
+    },
+    {
+      "id": "physical",
+      "name": "Dano físico"
+    },
+    {
+      "id": "arcane",
+      "name": "Magia arcana"
+    },
+    {
+      "id": "divine",
+      "name": "Magia divina"
+    },
+    {
+      "id": "control",
+      "name": "Controle"
+    },
+    {
+      "id": "support",
+      "name": "Suporte / buffs"
+    },
+    {
+      "id": "skills",
+      "name": "Perícias"
+    },
+    {
+      "id": "ranged",
+      "name": "Dano à distância"
+    }
+  ],
+  "companions": [
+    "Seelah",
+    "Camellia",
+    "Lann",
+    "Wenduag",
+    "Woljif",
+    "Ember",
+    "Nenio",
+    "Daeran",
+    "Sosiel",
+    "Regill",
+    "Arueshalae",
+    "Greybor",
+    "Trever",
+    "Ulbrig",
+    "Comandante",
+    "Personagem personalizado"
+  ],
+  "builds": [
+    {
+      "id": "oracle-angel",
+      "name": "Oracle + Angel",
+      "style": "Conjurador divino",
+      "path": "Angel",
+      "tags": [
+        "divine",
+        "support",
+        "frontline"
+      ],
+      "notes": "Sinergia conhecida pela combinação de magia divina e progresso mítico; depende das escolhas exatas e da compatibilidade das listas de magia.",
+      "status": "referência para validar"
+    },
+    {
+      "id": "sorcerer-lich",
+      "name": "Sorcerer + Lich",
+      "style": "Conjurador arcano",
+      "path": "Lich",
+      "tags": [
+        "arcane",
+        "control"
+      ],
+      "notes": "Foco em conjuração arcana e sinergia mítica. Requer avaliação das escolhas de sangue, magias e dificuldade.",
+      "status": "referência para validar"
+    },
+    {
+      "id": "demonslayer",
+      "name": "Demonslayer Ranger",
+      "style": "Ataque físico",
+      "path": "Trickster",
+      "tags": [
+        "physical",
+        "ranged",
+        "skills"
+      ],
+      "notes": "Candidato para dano físico consistente em campanha com muitos demônios; Caminho Mítico é ajustável.",
+      "status": "referência para validar"
+    },
+    {
+      "id": "mutation-warrior",
+      "name": "Mutation Warrior",
+      "style": "Corpo a corpo",
+      "path": "Trickster",
+      "tags": [
+        "frontline",
+        "physical"
+      ],
+      "notes": "Opção marcial que merece análise por nível e composição de talentos.",
+      "status": "referência para validar"
+    },
+    {
+      "id": "brown-fur",
+      "name": "Brown-Fur Transmuter",
+      "style": "Suporte arcano",
+      "path": "Não decidido",
+      "tags": [
+        "arcane",
+        "support"
+      ],
+      "notes": "Candidato para reforçar a party com transmutação; não há nota universal sem a composição.",
+      "status": "referência para validar"
+    }
+  ]
+}
