@@ -34,12 +34,22 @@ test('conteúdo acessível sem JavaScript', async ({ browser }) => {
   await page.close();
 });
 
-test('erro de catálogo tem mensagem visível', async ({ page }) => {
-  await page.route('**/data/catalog.json', route => route.fulfill({ status: 503 }));
-  await page.goto(codex);
-  await expect(page.getByRole('heading', { name: 'Catálogo indisponível' })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'Módulos' })).toBeHidden();
-});
+for (const failure of [
+  { title: 'HTTP 503', response: { status: 503 }, message: 'HTTP 503' },
+  { title: 'esquema inválido', response: { json: { schemaVersion: '99.0.0' } }, message: 'Catálogo incompatível: versão' },
+]) {
+  test(`catálogo com ${failure.title} mantém a consulta estática`, async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    await page.route('**/data/catalog.json', route => route.fulfill(failure.response));
+    await page.goto(codex);
+    await expect(page.getByRole('heading', { name: 'Catálogo indisponível' })).toBeVisible();
+    await expect(page.getByText(failure.message, { exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Consultar catálogo/ })).toBeVisible();
+    await expect(page.getByRole('navigation', { name: 'Módulos' })).toBeHidden();
+    expect(errors).toEqual([]);
+  });
+}
 
 test('campanhas independentes, janela temporizada e backup validado', async ({ page }) => {
   await page.goto(codex);
