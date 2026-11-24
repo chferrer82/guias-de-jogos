@@ -57,6 +57,14 @@ export default defineConfig({
 						{ label: 'Espada Biggoron', slug: 'zelda-ocarina-of-time/espada-biggoron' },
 					],
 				},
+				{
+					label: 'Kingdom Come: Deliverance II',
+					items: [
+						{ label: 'Visão geral', slug: 'kingdom-come-deliverance-2' },
+						{ label: 'Primeiras horas', slug: 'kingdom-come-deliverance-2/primeiras-horas' },
+						{ label: 'Wedding Crashers', slug: 'kingdom-come-deliverance-2/wedding-crashers' },
+					],
+				},
 				{ label: 'Como contribuir', slug: 'contribuir' },
 			],
 		}),

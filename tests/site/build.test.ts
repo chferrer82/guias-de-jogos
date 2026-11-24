@@ -20,6 +20,9 @@ const read = (url: string) => readFileSync(join(DIST, url.slice(BASE.length), 'i
 
 const EXPECTED = [
 	'pathfinder/',
+	'kingdom-come-deliverance-2/',
+	'kingdom-come-deliverance-2/primeiras-horas/',
+	'kingdom-come-deliverance-2/wedding-crashers/',
 	'',
 	'contribuir/',
 	'zelda-ocarina-of-time/',
