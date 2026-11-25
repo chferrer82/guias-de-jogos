@@ -1,0 +1,81 @@
+---
+const steps = [
+  { id: 'supplies', label: 'Tenho onde descansar e como salvar', hint: 'Confira um leito que permita salvar ou leve Saviour Schnapps antes de viajar.' },
+  { id: 'training', label: 'Pratiquei como me defender', hint: 'Se pretende lutar, pratique a defesa em treino antes de procurar um combate difícil.' },
+  { id: 'journal', label: 'Confirmei Wedding Crashers no diário', hint: 'Consulte o diário. Se Wedding Crashers ainda não aparecer, siga o objetivo principal registrado no jogo.' },
+  { id: 'route', label: 'Escolhi uma rota para o casamento', hint: 'Compare Radovan em Tachov e Kreyzl no moinho. Escolha pela atividade que quer praticar.' },
+];
+---
+<kcd2-journey>
+  <form hidden>
+    <fieldset>
+      <legend>O que você já fez em Trosky?</legend>
+      {steps.map(step => (
+        <label><input type="checkbox" name={step.id} data-hint={step.hint} /> {step.label}</label>
+      ))}
+    </fieldset>
+    <p><label for="kcd2-goal">O que você quer resolver agora?</label></p>
+    <select id="kcd2-goal" name="goal">
+      <option value="supplies">Descansar e salvar</option>
+      <option value="training">Preparar para combate</option>
+      <option value="route">Chegar ao casamento</option>
+    </select>
+    <p><output aria-live="polite"></output></p>
+  </form>
+  <p data-fallback>Confira primeiro o objetivo no diário. Se o próximo passo envolve viagem, veja como descansar e salvar nas primeiras horas.</p>
+</kcd2-journey>
+
+<script>
+  class Journey extends HTMLElement {
+    connectedCallback() {
+      const form = this.querySelector('form');
+      const output = this.querySelector('output');
+      const goal = this.querySelector<HTMLSelectElement>('select');
+      const fallback = this.querySelector<HTMLElement>('[data-fallback]');
+      const checks = [...this.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')];
+      if (!form || !output || !goal || !fallback) return;
+
+      const key = 'guias-de-jogos:kcd2:trosky:v1';
+      let canSave = true;
+      try {
+        const saved = JSON.parse(localStorage.getItem(key) ?? '[]');
+        if (Array.isArray(saved)) checks.forEach(check => { check.checked = saved.includes(check.name); });
+      } catch {
+        canSave = false;
+      }
+
+      const update = () => {
+        const selected = checks.find(check => check.name === goal.value);
+        const journal = checks.find(check => check.name === 'journal');
+        const next = goal.value === 'route' && journal && !journal.checked ? journal : selected;
+        const ready = goal.value === 'route'
+          ? 'Confira o próximo objetivo da rota no diário antes de avançar.'
+          : 'Etapa registrada. Escolha outro objetivo quando quiser.';
+        output.textContent = (next?.checked ? ready : next?.dataset.hint ?? ready)
+          + (canSave ? '' : ' O navegador não conseguiu carregar ou salvar o checklist.');
+      };
+
+      form.addEventListener('change', event => {
+        if (event.target instanceof HTMLInputElement && canSave) {
+          try {
+            localStorage.setItem(key, JSON.stringify(checks.filter(check => check.checked).map(check => check.name)));
+          } catch {
+            canSave = false;
+          }
+        }
+        update();
+      });
+      update();
+      form.hidden = false;
+      fallback.hidden = true;
+    }
+  }
+
+  customElements.define('kcd2-journey', Journey);
+</script>
+
+<style>
+  fieldset { border: 1px solid var(--sl-color-gray-5); padding: .75rem 1rem; }
+  fieldset label { display: block; }
+  select { max-width: 100%; color: var(--sl-color-text); background: var(--sl-color-bg); padding: .35rem; }
+</style>
